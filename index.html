@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Весёлая ферма — Merge Valley</title>
+<script src="https://yandex.ru/games/sdk/v2"></script>
 <style>
 :root{
  --ink:#27352c;--muted:#7a887d;--cream:#fffaf0;--paper:#f6f0d9;--line:#9cad9e;
@@ -244,7 +245,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
  </div>
 </div>
 
- <div class="footer">HTML5 prototype • SVG • localStorage • Yandex Games SDK hook</div>
+ <div class="footer">HTML5 prototype • SVG • localStorage • Yandex Games SDK</div>
 </main>
 </div>
 
@@ -277,7 +278,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.1 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -368,7 +369,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <div class="muted">Сравни свою ферму с другими фермерами долины.</div>
   <div id="leaderboardList"></div>
   <button class="btn" id="lbRefreshBtn" style="margin-top:10px;width:100%">🔄 Обновить рейтинг</button>
-  <div class="notice">ℹ️ Это локальный рейтинг: твой результат сравнивается с ботами-фермерами прямо в браузере. Настоящий онлайн-рейтинг появится при подключении Yandex Games SDK.</div>
+  <div class="notice">ℹ️ Это локальный рейтинг: твой результат сравнивается с ботами-фермерами прямо в браузере. Настоящий онлайн-рейтинг появится, когда будет подключён Leaderboards API Яндекс Игр.</div>
  </div>
 </div>
 
@@ -388,9 +389,10 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.0</b></div>
+  <div class="statLine"><span>Версия</span><b>5.1</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
-  <div class="statLine"><span>Сохранение</span><b>localStorage</b></div>
+  <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
+  <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
   <div class="notice">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Прокачивай уровень фермы, чтобы открывать районы на карте долины.</div>
   <div class="notice">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
  </div>
@@ -428,7 +430,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    </div>
    <button class="startGhost" id="startResetBtn" style="display:none">Начать заново с чистого листа</button>
   </div>
-  <div class="startFooter">HTML5 • localStorage • Yandex Games SDK hook</div>
+  <div class="startFooter">HTML5 • localStorage • Yandex Games SDK</div>
  </div>
 </div>
 
@@ -688,12 +690,28 @@ function checkOffline(){
 }
 $('#giftBtn').onclick=()=>{
  if(Date.now()-state.gift<120000){toast('🎁 Сундук ещё не готов');return}
- state.gift=Date.now();const r=120+Math.floor(Math.random()*280);state.coins+=r;state.rep+=15;state.giftsOpened++;playSound('coin');toast('🎁 +'+r+' 🪙');render();
- if(!state.dialogsShown.firstGift){
-  state.dialogsShown.firstGift=true;
-  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Сундук фермера обновляется каждые 2 минуты — не забывай заглядывать за наградой.']});
- }
+ openGiftReward(120+Math.floor(Math.random()*280));
 };
+function openGiftReward(r){
+ const canAd=!!YG.ysdk?.adv;
+ $('#modalContent').innerHTML=`<div style="font-size:60px;text-align:center;margin:5px 0">🎁</div><h2>Сундук фермера</h2>
+ <div class="reward">Тебе выпало <b>${fmt(r)} 🪙</b>.</div>
+ ${canAd?'<button class="btn primary" id="giftAdBtn" style="width:100%;margin-bottom:8px">🎬 Смотреть рекламу и удвоить</button>':''}
+ <button class="btn" id="giftTakeBtn" style="width:100%">Забрать так</button>`;
+ $('#modal').classList.add('show');
+ const finish=mult=>{
+  state.gift=Date.now();state.coins+=r*mult;state.rep+=15;state.giftsOpened++;playSound('coin');
+  toast('🎁 +'+fmt(r*mult)+' 🪙'+(mult>1?' (×2 за рекламу)':''));
+  $('#modal').classList.remove('show');render();
+  if(!state.dialogsShown.firstGift){
+   state.dialogsShown.firstGift=true;
+   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Сундук фермера обновляется каждые 2 минуты — не забывай заглядывать за наградой.']});
+  }
+ };
+ $('#giftTakeBtn').onclick=()=>finish(1);
+ const adBtn=$('#giftAdBtn');
+ if(adBtn)adBtn.onclick=()=>showRewardedAd(()=>finish(2),()=>{});
+}
 $('#dailyBtn').onclick=()=>{
  const day=new Date().toDateString();
  if(state.daily===day){toast('📅 Уже получено сегодня');return}
@@ -704,13 +722,57 @@ $('#close').onclick=()=>$('#modal').classList.remove('show');
 $('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.tab).classList.add('active')});
 
-window.YandexGames={
- async init(){
-  try{if(window.YaGames){window.yg=await YaGames.init();return window.yg}}catch(e){}
-  return null;
- },
- showRewarded:async()=>{try{return window.yg?.adv?.showRewardedVideo({callbacks:{onOpen:()=>{},onRewarded:()=>{},onClose:()=>{},onError:()=>{}}})}catch(e){}}
-};
+/* ===== YANDEX GAMES SDK ===== */
+const YG={ysdk:null,player:null};
+async function ygInit(){
+ try{
+  if(!window.YaGames)return;
+  YG.ysdk=await YaGames.init();
+  try{YG.ysdk.features?.LoadingAPI?.ready?.()}catch(e){}
+  const statusEl=$('#sdkStatus');if(statusEl)statusEl.textContent='подключён ✅';
+  try{YG.player=await YG.ysdk.getPlayer({scopes:false})}catch(e){}
+  if(YG.player&&!hasSave()&&!META.entered){
+   try{
+    const cloud=await YG.player.getData();
+    if(cloud&&(cloud.built>0||cloud.tutorialDone)&&!hasSave()&&!META.entered){
+     Object.assign(state,cloud);
+     state.grid=Array.isArray(state.grid)?state.grid:Array(20).fill(null);
+     state.activeQuests=Array.isArray(state.activeQuests)?state.activeQuests:[];
+     render();initStartScreen();
+     toast('☁️ Прогресс загружен из облака');
+    }
+   }catch(e){}
+  }
+ }catch(e){}
+}
+function cloudSaveNow(){
+ if(!YG.player)return;
+ try{YG.player.setData(state).catch(()=>{})}catch(e){}
+}
+function showRewardedAd(onReward,onNoReward){
+ if(!YG.ysdk?.adv){toast('Реклама доступна в Яндекс Играх');onNoReward();return}
+ YG.ysdk.features?.GameplayAPI?.stop?.();
+ let rewarded=false;
+ YG.ysdk.adv.showRewardedVideo({callbacks:{
+  onRewarded:()=>{rewarded=true},
+  onClose:()=>{YG.ysdk.features?.GameplayAPI?.start?.();rewarded?onReward():onNoReward()},
+  onError:()=>{YG.ysdk.features?.GameplayAPI?.start?.();onNoReward();toast('Не удалось показать рекламу')}
+ }});
+}
+function showInterstitialAd(){
+ if(!YG.ysdk?.adv)return;
+ YG.ysdk.features?.GameplayAPI?.stop?.();
+ YG.ysdk.adv.showFullscreenAdv({callbacks:{
+  onClose:()=>YG.ysdk.features?.GameplayAPI?.start?.(),
+  onError:()=>YG.ysdk.features?.GameplayAPI?.start?.(),
+  onOffline:()=>YG.ysdk.features?.GameplayAPI?.start?.()
+ }});
+}
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){cloudSaveNow();try{YG.ysdk?.features?.GameplayAPI?.stop?.()}catch(e){}}
+ else if(META.entered){try{YG.ysdk?.features?.GameplayAPI?.start?.()}catch(e){}}
+});
+setInterval(cloudSaveNow,60000);
 
 /* ===== META SYSTEMS: menu / tutorial / dialogs / map / leaderboard / start screen ===== */
 const META={tutorialStep:0,entered:false,dialogOpen:false};
@@ -867,6 +929,7 @@ function claimMapNode(id){
   state.dialogsShown.firstMapNode=true;
   queueDialog({name:'Мила',role:'Садовница',lines:['Новая точка на карте открыта! Такие бонусы складываются между собой.','Продолжай качать ферму — впереди ещё много интересных мест долины.']});
  }
+ showInterstitialAd();
 }
 
 /* --- leaderboard (local, vs. bot farmers) --- */
@@ -961,6 +1024,7 @@ function initStartScreen(){
 }
 function enterGame(){
  if(META.entered)return;META.entered=true;
+ try{YG.ysdk?.features?.GameplayAPI?.start?.()}catch(e){}
  checkOffline();
  if(!state.tutorialDone){
   setTimeout(()=>{
@@ -975,7 +1039,7 @@ function enterGame(){
  }
 }
 
-render();save();renderSoundBtn();initStartScreen();
+render();save();renderSoundBtn();initStartScreen();ygInit();
 
 let lastTick=Date.now();
 setInterval(()=>{

@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Весёлая ферма — Merge Valley</title>
+<style>
+:root{
+ --ink:#27352c;--muted:#7a887d;--cream:#fffaf0;--paper:#f6f0d9;--line:#9cad9e;
+ --green:#76b86d;--green2:#a9d79b;--yellow:#f4ce55;--brown:#8e684d;--red:#e77962;
+ --shadow:0 4px 0 rgba(44,62,48,.13),0 12px 25px rgba(44,62,48,.10);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+body{
+ background:
+ radial-gradient(circle at 10% 8%,rgba(255,255,255,.8) 0 3%,transparent 3.5%),
+ radial-gradient(circle at 90% 18%,rgba(255,255,255,.55) 0 4%,transparent 4.5%),
+ linear-gradient(#b9dfb7 0,#dce9c9 48%,#c6dfba 100%);
+ display:flex;justify-content:center;padding:10px;
+}
+button{font:inherit;color:inherit}
+.app{width:min(480px,100%);min-height:calc(100vh - 20px);background:var(--paper);border:3px solid #526453;border-radius:24px;overflow:hidden;box-shadow:0 18px 50px rgba(31,48,35,.24);position:relative}
+.top{padding:10px 12px 8px;background:linear-gradient(#fffdf6,#f2edd6);border-bottom:2px solid #c2ccb9;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.logoRow{display:flex;align-items:center;gap:9px;font-weight:1000}
+.logo{width:40px;height:40px;border:2px solid #607061;border-radius:12px;background:#d8ecd0;display:grid;place-items:center}
+.logo svg{width:31px;height:31px}
+.iconBtn{width:38px;height:38px;border:2px solid #7c897d;background:#fff;border-radius:11px;display:grid;place-items:center;cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.stat{background:#fff;border:2px solid #d2d9c9;border-radius:10px;padding:5px 7px}
+.stat small{display:block;font-size:9px;color:var(--muted);font-weight:900;text-transform:uppercase}
+.stat b{font-size:15px}
+.main{padding:9px 10px 18px}
+.hero{padding:4px 2px 9px}.season{font-size:9px;color:#a27d25;font-weight:1000;text-transform:uppercase;letter-spacing:.5px}
+h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;padding:5px 9px;border:2px solid #aa8b2c;background:#f4cf56;border-radius:999px;font-size:11px;font-weight:1000}
+.field{
+ position:relative;border:3px solid #536554;border-radius:16px;padding:13px 11px 14px;
+ background:linear-gradient(160deg,#d4e9d1,#b9d8bb);overflow:hidden;
+}
+.field:before,.field:after{content:"";position:absolute;border-radius:50%;background:#d4bb7f;opacity:.75}
+.field:before{width:160px;height:42px;left:-35px;bottom:-17px;transform:rotate(-8deg)}
+.field:after{width:155px;height:38px;right:-40px;bottom:-12px;transform:rotate(8deg)}
+.fence{position:absolute;inset:7px;border:2px dashed rgba(81,111,82,.28);border-radius:11px;pointer-events:none}
+.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.cell{
+ aspect-ratio:1;border:2px solid #8fa394;border-radius:9px;background:linear-gradient(#f8f8ec,#dce8d7);
+ box-shadow:inset 0 2px rgba(255,255,255,.8),0 2px 0 rgba(61,83,64,.12);
+ display:grid;place-items:center;cursor:pointer;position:relative;transition:transform .12s,box-shadow .12s;
+}
+.cell:active{transform:scale(.96)}.cell.selected{outline:3px solid #e5b73a;box-shadow:0 0 0 5px rgba(245,207,83,.24),inset 0 2px rgba(255,255,255,.8)}
+.cell.empty .plus{font-size:26px;color:#99a99a}.cell .obj{width:72%;height:72%;transition:transform .2s}.cell.new .obj{animation:pop .35s ease-out}
+@keyframes pop{0%{transform:scale(.3) rotate(-8deg)}70%{transform:scale(1.14) rotate(4deg)}100%{transform:scale(1)}}
+.level{position:absolute;right:3px;top:3px;background:#536554;color:#fff;font-size:8px;font-weight:1000;border-radius:5px;padding:2px 4px}
+.tag{position:absolute;left:2px;right:2px;bottom:2px;text-align:center;font-size:7px;font-weight:900;color:#647265;white-space:nowrap;overflow:hidden}
+.incomeDot{position:absolute;right:4px;top:4px;color:#4e9749;font-size:8px;font-weight:1000}
+.panel{margin-top:9px;background:var(--cream);border:2px solid #aebcad;border-radius:13px;padding:9px;box-shadow:0 2px 0 rgba(54,70,55,.08)}
+.panelTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:14px;font-weight:1000}
+.panelTitle small{font-size:9px;color:var(--muted)}
+.actions{display:grid;gap:7px}.btn{border:2px solid #6c7b6d;border-radius:10px;padding:9px 10px;background:linear-gradient(#fff,#e7ece0);font-weight:950;cursor:pointer;box-shadow:0 2px 0 rgba(46,62,49,.13)}
+.btn.primary{background:linear-gradient(#ffe995,#f0c84c);border-color:#aa8a2b}.btn.green{background:linear-gradient(#cce9bd,#9ccc8e);border-color:#6b9d61}
+.btn:disabled{opacity:.45;cursor:not-allowed}.two{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.quest{display:flex;align-items:center;gap:8px;border:2px solid #cbd4c5;border-radius:10px;padding:8px;background:#f8f9ef;margin-top:6px}
+.qicon{font-size:22px}.qbody{flex:1}.qbody b{font-size:11px}.qbody small{display:block;font-size:9px;color:var(--muted)}
+.bar{height:6px;background:#dde5d9;border-radius:99px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:#72b86a}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shopItem{border:2px solid #ccd4c6;border-radius:10px;background:#f9f9ef;padding:8px;cursor:pointer}.shopItem strong{font-size:11px}.shopItem small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.shopItem b{display:block;margin-top:4px;font-size:10px;color:#9b7521}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.tab{border:2px solid #b7c3b4;background:#eef1e5;border-radius:9px;padding:7px;font-size:10px;font-weight:950;cursor:pointer}.tab.active{background:#f4cf56;border-color:#aa8a2b}
+.section{display:none}.section.active{display:block}
+.float{position:fixed;z-index:90;pointer-events:none;color:#4a9845;font-weight:1000;font-size:14px;animation:floatUp .9s ease-out forwards;text-shadow:0 1px #fff}
+@keyframes floatUp{to{transform:translateY(-55px);opacity:0}}
+.modal{position:fixed;inset:0;background:rgba(30,43,32,.48);display:none;place-items:end center;z-index:100;padding:10px}.modal.show{display:grid}
+.card{width:min(480px,100%);background:#fffdf3;border:3px solid #536453;border-radius:20px;padding:14px;box-shadow:var(--shadow);animation:sheet .2s ease-out}
+@keyframes sheet{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.close{float:right;border:0;background:transparent;font-size:24px;cursor:pointer}
+.card h2{margin:0 0 5px;font-size:18px}.muted{color:var(--muted);font-size:11px}.modalIcon{width:90px;height:90px;display:block;margin:5px auto}
+.reward{background:#eef6e8;border:2px dashed #91b08b;padding:9px;border-radius:10px;margin:9px 0;font-size:11px}
+.offline{display:none;position:fixed;inset:0;background:rgba(30,43,32,.55);place-items:center;z-index:120;padding:16px}.offline.show{display:grid}.offline .card{text-align:center}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:#26352b;color:white;padding:9px 13px;border-radius:11px;font-size:11px;font-weight:900;opacity:0;transition:.2s;z-index:150;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{text-align:center;color:#89958a;font-size:8px;padding:10px}
+@media(min-width:700px){body{padding:18px}.app{min-height:calc(100vh - 36px)}}
+
+/* ===== META / TUTORIAL / MENU ===== */
+.menuOverlay,.tutorialOverlay,.bookOverlay{position:fixed;inset:0;background:rgba(24,38,28,.58);display:none;place-items:center;z-index:200;padding:14px}
+.menuOverlay.show,.tutorialOverlay.show,.bookOverlay.show{display:grid}
+.menuCard,.tutorialCard,.bookCard{width:min(480px,100%);max-height:92vh;overflow:auto;background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:14px;box-shadow:0 18px 45px rgba(25,39,28,.28)}
+.menuCard h2,.tutorialCard h2,.bookCard h2{margin:0 0 4px}
+.menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.menuTile{border:2px solid #c6d0c1;border-radius:12px;background:#f7f8ed;padding:11px;text-align:left;cursor:pointer}
+.menuTile b{display:block;font-size:12px}.menuTile small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
+.closeBig{float:right;border:0;background:transparent;font-size:26px;cursor:pointer}
+.tutMentor{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:2px dashed #dbe3d5}
+.tutMentor b{display:block;font-size:11px}.tutMentor small{display:block;font-size:9px;color:var(--muted)}
+.tutStep{display:none}.tutStep.active{display:block}
+.tutArt{height:150px;border:2px solid #bdcbb8;border-radius:14px;background:linear-gradient(#d7ead3,#bcdabd);display:grid;place-items:center;margin:10px 0}
+.tutArt .big{font-size:65px}
+.tutDots{display:flex;gap:5px;justify-content:center;margin:10px 0}.tutDot{width:8px;height:8px;border-radius:50%;background:#cbd4c7;flex:0 0 auto}.tutDot.active{background:#6da65f}
+.tutActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.notice{background:#edf5e8;border:2px dashed #98b58e;border-radius:11px;padding:9px;font-size:10px;margin-top:9px}
+.statLine{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e0e5d8;font-size:11px}
+.statLine:last-child{border-bottom:0}
+.collection{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.collectionItem{border:2px solid #d0d7ca;border-radius:10px;background:#f8f8ef;padding:8px;text-align:center}
+.collectionItem.locked{filter:grayscale(1);opacity:.45}
+.collectionItem .ci{height:45px;display:grid;place-items:center}
+.collectionItem svg{width:43px;height:43px}
+.badge{display:inline-block;border:2px solid #aa8a2b;background:#f4cf56;border-radius:999px;padding:3px 7px;font-size:9px;font-weight:1000}
+.expandInfo{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:#f7f8ed;border:2px solid #cbd4c5;border-radius:11px;padding:9px;margin-top:7px}
+.progressBig{height:9px;background:#dce4d8;border-radius:99px;overflow:hidden;margin-top:6px}.progressBig i{display:block;height:100%;background:#72b86a}
+.menuFooter{font-size:8px;color:#89958a;text-align:center;margin-top:10px}
+.toggleRow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;background:#f7f8ed;border:2px solid #cbd4c5;border-radius:11px;padding:9px}
+.toggleRow span{font-size:11px;font-weight:900}
+
+/* ===== START SCREEN ===== */
+.startScreen{position:fixed;inset:0;z-index:500;display:none;place-items:center;padding:20px;text-align:center;
+ background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.55) 0 4%,transparent 5%),
+ radial-gradient(circle at 85% 80%,rgba(255,255,255,.4) 0 5%,transparent 6%),
+ linear-gradient(165deg,#eaf3e0,#c9e2c0 55%,#aed7a8)}
+.startScreen.show{display:grid}
+.startInner{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:4px}
+.startLogo{width:96px;height:96px;border:3px solid #526453;border-radius:26px;background:#fffdf3;display:grid;place-items:center;box-shadow:var(--shadow);animation:floaty 3s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.startLogo svg{width:70px;height:70px}
+.startTitle{font-size:26px;margin:10px 0 0;font-weight:1000}
+.startSubtitle{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+.startButtons{width:100%;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.startBig{width:100%;font-size:15px;padding:14px}
+.startFooter{font-size:9px;color:#5c6a5d;margin-top:18px;opacity:.75}
+.startGhost{background:transparent;border:0;color:#43503f;text-decoration:underline;font-size:10px;cursor:pointer;padding:6px}
+
+/* ===== DIALOG (NPC) ===== */
+.dialogOverlay{position:fixed;inset:0;background:rgba(24,38,28,.55);display:none;place-items:end center;z-index:260;padding:12px}
+.dialogOverlay.show{display:grid}
+.dialogCard{width:min(480px,100%);background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:13px;box-shadow:var(--shadow);animation:sheet .2s ease-out;display:flex;gap:10px;align-items:flex-start}
+.dlgAvatar{flex:0 0 auto;width:54px;height:54px;border:2px solid #6c7b6d;border-radius:50%;background:#eef6e8;display:grid;place-items:center;overflow:hidden}
+.dlgAvatar svg{width:46px;height:46px}
+.dlgBody{flex:1;min-width:0}
+.dlgName{font-weight:1000;font-size:13px}
+.dlgRole{font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;margin-bottom:4px}
+.dlgText{font-size:12px;line-height:1.45;min-height:34px}
+.dlgFooter{display:flex;justify-content:space-between;align-items:center;margin-top:9px;gap:8px}
+.dlgDots{display:flex;gap:4px}
+#dlgNext{padding:8px 14px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="app" id="app" style="display:none">
+<header class="top">
+ <div class="brand">
+  <div class="logoRow">
+   <div class="logo">
+    <svg viewBox="0 0 48 48">
+     <path d="M6 30c3-10 11-17 20-17s15 5 17 14v12H6z" fill="#87c678"/>
+     <path d="M10 33c7-8 18-12 31-8" fill="none" stroke="#4d7849" stroke-width="3" stroke-linecap="round"/>
+     <path d="M14 25q4-7 8 0M28 22q4-7 8 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+     <circle cx="18" cy="28" r="2" fill="#4d7849"/><circle cx="31" cy="25" r="2" fill="#4d7849"/>
+    </svg>
+   </div>
+   <span>Весёлая ферма</span>
+  </div>
+  <button class="iconBtn" id="menuBtn" aria-label="Меню">☰</button>
+ </div>
+ <div class="stats">
+  <div class="stat"><small>Монеты</small><b id="coins">0</b></div>
+  <div class="stat"><small>Репутация</small><b id="rep">0</b></div>
+  <div class="stat"><small>Доход</small><b id="income">0/с</b></div>
+ </div>
+</header>
+
+<main class="main">
+ <div class="hero">
+  <div class="season">Сезон 1 • Летний урожай</div>
+  <h1>Развивайте ферму, объединяйте постройки</h1>
+  <span class="pill">×<span id="mult">1.0</span> доход</span>
+ </div>
+
+ <section class="field">
+  <div class="fence"></div>
+  <div class="grid" id="grid"></div>
+ </section>
+
+ <div class="panel">
+  <div class="panelTitle"><span>Стройка</span><small id="free">0 свободно</small></div>
+  <div class="actions">
+   <button class="btn primary" id="buildBtn">Построить объект · <span id="buildCost">25</span> 🪙</button>
+   <div class="two">
+    <button class="btn green" id="mergeBtn">✨ Объединить</button>
+    <button class="btn" id="sellBtn">Продать</button>
+   </div>
+  </div>
+ </div>
+
+ <div class="tabs">
+  <button class="tab active" data-tab="orders">📜 Заказы</button>
+  <button class="tab" data-tab="upgrades">⬆️ Улучшения</button>
+  <button class="tab" data-tab="more">🎁 Бонусы</button>
+ </div>
+
+ <section class="section active" id="orders"><div class="panel"><div class="panelTitle"><span>Заказы</span><small>награды</small></div><div id="quests"></div></div></section>
+ <section class="section" id="upgrades"><div class="panel"><div class="panelTitle"><span>Улучшения фермы</span><small>уровень <span id="level">1</span></small></div><div class="shop" id="shop"></div></div></section>
+ <section class="section" id="more">
+  <div class="panel">
+   <div class="panelTitle"><span>Бонусы</span><small>каждые 2 минуты</small></div>
+   <div class="actions">
+    <button class="btn primary" id="giftBtn">🎁 Открыть сундук фермера</button>
+    <button class="btn" id="dailyBtn">📅 Ежедневная награда</button>
+    <button class="btn" id="resetBtn">Сбросить сохранение</button>
+   </div>
+  </div>
+ </section>
+
+<div class="panel" id="farmProgressPanel">
+ <div class="panelTitle"><span>🏆 Развитие фермы</span><small>уровень <span id="farmLevel">1</span></small></div>
+ <div class="expandInfo">
+  <div><b id="farmTitle">Маленькая ферма</b><div class="progressBig"><i id="farmProgress" style="width:0%"></i></div></div>
+  <span class="badge" id="farmXP">0 XP</span>
+ </div>
+</div>
+
+ <div class="footer">HTML5 prototype • SVG • localStorage • Yandex Games SDK hook</div>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="card">
+ <button class="close" id="close">×</button>
+ <div id="modalContent"></div>
+</div></div>
+<div class="offline" id="offline"><div class="card">
+ <h2>🌅 Ты вернулся!</h2><p class="muted">Ферма работала без тебя.</p>
+ <div class="reward" id="offlineReward"></div>
+ <button class="btn primary" id="offlineOk">Забрать награду</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<div class="menuOverlay" id="menuOverlay">
+ <div class="menuCard">
+  <button class="closeBig" data-close="menuOverlay">×</button>
+  <h2>☰ Меню фермы</h2>
+  <div class="muted">Здесь собраны все системы игры.</div>
+  <div class="menuGrid">
+   <button class="menuTile" id="continueBtn"><b>🌾 Вернуться на ферму</b><small>Закрыть меню</small></button>
+   <button class="menuTile" id="tutorialBtn"><b>🎓 Обучение</b><small>Пройти обучение заново</small></button>
+   <button class="menuTile" id="bookBtn"><b>📖 Альбом</b><small>Все открытые объекты</small></button>
+   <button class="menuTile" id="statsBtn"><b>📊 Статистика</b><small>Прогресс и показатели</small></button>
+   <button class="menuTile" id="expandBtn"><b>🗺️ Расширение</b><small>Открывать новые клетки</small></button>
+   <button class="menuTile" id="saveBtn"><b>💾 Сохранить</b><small>Сохранить прогресс сейчас</small></button>
+   <button class="menuTile" id="menuSettingsBtn"><b>⚙️ Настройки</b><small>Звук и сброс прогресса</small></button>
+   <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
+  </div>
+  <div class="notice">💡 Совет: сначала выполняй заказы, затем объединяй одинаковые объекты — так прогресс ускоряется.</div>
+  <div class="menuFooter">Весёлая ферма v4 • mobile-first HTML5</div>
+ </div>
+</div>
+
+<div class="tutorialOverlay" id="tutorialOverlay">
+ <div class="tutorialCard">
+  <button class="closeBig" data-close="tutorialOverlay">×</button>
+  <div class="tutMentor"><div class="dlgAvatar" style="width:36px;height:36px" id="tutMentorAvatar"></div><div><b>Дед Матвей</b><small>Наставник фермы</small></div></div>
+  <div id="tutorialSteps">
+   <div class="tutStep active" data-step="0">
+    <span class="badge">ШАГ 1 ИЗ 6</span><h2>🌱 Добро пожаловать!</h2>
+    <div class="tutArt"><div class="big">🌾</div></div>
+    <p>Это твоя ферма. Здесь всё строится вокруг простого цикла: <b>построй → заработай → объедини → улучши</b>.</p>
+   </div>
+   <div class="tutStep" data-step="1">
+    <span class="badge">ШАГ 2 ИЗ 6</span><h2>🏗️ Строительство</h2>
+    <div class="tutArt"><div class="big">🏡</div></div>
+    <p>Нажимай на пустую клетку или кнопку «Построить». Объект начинает приносить монеты автоматически.</p>
+   </div>
+   <div class="tutStep" data-step="2">
+    <span class="badge">ШАГ 3 ИЗ 6</span><h2>✨ Объединение</h2>
+    <div class="tutArt"><div class="big">🌾 + 🌾 = 🌾²</div></div>
+    <p>Выбери <b>два одинаковых объекта одного уровня</b> и нажми «Объединить». Новый объект будет приносить больше.</p>
+   </div>
+   <div class="tutStep" data-step="3">
+    <span class="badge">ШАГ 4 ИЗ 6</span><h2>📜 Заказы</h2>
+    <div class="tutArt"><div class="big">📜</div></div>
+    <p>Заказы дают крупные награды. Выполняй их параллельно с развитием — это главный ускоритель первых минут игры.</p>
+   </div>
+   <div class="tutStep" data-step="4">
+    <span class="badge">ШАГ 5 ИЗ 6</span><h2>⬆️ Улучшения</h2>
+    <div class="tutArt"><div class="big">🚜</div></div>
+    <p>В меню улучшений покупай автоматизацию, рынок, рабочих и трактор. Они усиливают экономику всей фермы.</p>
+   </div>
+   <div class="tutStep" data-step="5">
+    <span class="badge">ШАГ 6 ИЗ 6</span><h2>🏆 Твоя цель</h2>
+    <div class="tutArt"><div class="big">👑</div></div>
+    <p>Развивай ферму, открывай новые объекты и поднимай уровень. После обучения можно играть в своём темпе. Если что — всё это можно повторить в меню ☰.</p>
+   </div>
+  </div>
+  <div class="tutDots" id="tutDots"></div>
+  <div class="tutActions"><button class="btn" id="tutBack">Назад</button><button class="btn primary" id="tutNext">Далее</button></div>
+ </div>
+</div>
+
+<div class="bookOverlay" id="bookOverlay">
+ <div class="bookCard">
+  <button class="closeBig" data-close="bookOverlay">×</button>
+  <h2>📖 Альбом объектов</h2><div class="muted">Открывай новые постройки по мере роста стоимости строительства.</div>
+  <div class="collection" id="collection"></div>
+ </div>
+</div>
+
+<div class="bookOverlay" id="statsOverlay">
+ <div class="bookCard">
+  <button class="closeBig" data-close="statsOverlay">×</button>
+  <h2>📊 Статистика</h2>
+  <div id="statsContent"></div>
+ </div>
+</div>
+
+<div class="bookOverlay" id="expandOverlay">
+ <div class="bookCard">
+  <button class="closeBig" data-close="expandOverlay">×</button>
+  <h2>🗺️ Расширение фермы</h2>
+  <div class="muted">Открывай дополнительные клетки, чтобы разместить больше производств.</div>
+  <div id="expandContent"></div>
+ </div>
+</div>
+
+<div class="bookOverlay" id="settingsOverlay">
+ <div class="bookCard">
+  <button class="closeBig" data-close="settingsOverlay">×</button>
+  <h2>⚙️ Настройки</h2>
+  <div class="muted">Управляй звуком и своим прогрессом.</div>
+  <div class="toggleRow"><span>🔊 Звуковые эффекты</span><button class="btn" id="soundToggleBtn">Включены</button></div>
+  <div class="notice">💾 Игра сохраняется автоматически в памяти этого браузера (localStorage). Если очистить данные сайта — прогресс будет потерян.</div>
+  <button class="btn" id="settingsResetBtn" style="margin-top:10px;width:100%">🗑️ Сбросить весь прогресс</button>
+ </div>
+</div>
+
+<div class="bookOverlay" id="aboutOverlay">
+ <div class="bookCard">
+  <button class="closeBig" data-close="aboutOverlay">×</button>
+  <h2>ℹ️ Об игре</h2>
+  <div class="muted">Весёлая ферма — Merge Valley</div>
+  <div class="statLine"><span>Версия</span><b>4.0</b></div>
+  <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
+  <div class="statLine"><span>Сохранение</span><b>localStorage</b></div>
+  <div class="notice">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Открывай улучшения и новые участки земли, чтобы расти быстрее.</div>
+  <div class="notice">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
+ </div>
+</div>
+
+<div class="dialogOverlay" id="dialogOverlay">
+ <div class="dialogCard">
+  <div class="dlgAvatar" id="dlgAvatar"></div>
+  <div class="dlgBody">
+   <div class="dlgName" id="dlgName"></div>
+   <div class="dlgRole" id="dlgRole"></div>
+   <div class="dlgText" id="dlgText"></div>
+   <div class="dlgFooter"><div class="dlgDots" id="dlgDots"></div><button class="btn primary" id="dlgNext">Далее</button></div>
+  </div>
+ </div>
+</div>
+
+<div class="startScreen show" id="startScreen">
+ <div class="startInner">
+  <div class="startLogo">
+   <svg viewBox="0 0 48 48">
+    <path d="M6 30c3-10 11-17 20-17s15 5 17 14v12H6z" fill="#87c678"/>
+    <path d="M10 33c7-8 18-12 31-8" fill="none" stroke="#4d7849" stroke-width="3" stroke-linecap="round"/>
+    <path d="M14 25q4-7 8 0M28 22q4-7 8 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="18" cy="28" r="2" fill="#4d7849"/><circle cx="31" cy="25" r="2" fill="#4d7849"/>
+   </svg>
+  </div>
+  <div class="startTitle">Весёлая ферма</div>
+  <div class="startSubtitle">Merge Valley</div>
+  <div class="startButtons">
+   <button class="btn primary startBig" id="startPlayBtn">▶️ Играть</button>
+   <div class="two">
+    <button class="btn" id="startSettingsBtn">⚙️ Настройки</button>
+    <button class="btn" id="startAboutBtn">ℹ️ Об игре</button>
+   </div>
+   <button class="startGhost" id="startResetBtn" style="display:none">Начать заново с чистого листа</button>
+  </div>
+  <div class="startFooter">HTML5 • localStorage • Yandex Games SDK hook</div>
+ </div>
+</div>
+
+<script>
+const TYPES=[
+ {id:'wheat',name:'Пшеничное поле',icon:'wheat',base:2,price:25,sell:18,max:8},
+ {id:'cow',name:'Молочная ферма',icon:'cow',base:4,price:55,sell:40,max:8},
+ {id:'mill',name:'Солнечная мельница',icon:'mill',base:7,price:90,sell:65,max:8},
+ {id:'orchard',name:'Яблоневый сад',icon:'apple',base:11,price:135,sell:98,max:8},
+ {id:'barn',name:'Большой амбар',icon:'barn',base:17,price:195,sell:142,max:8},
+ {id:'cafe',name:'Фермерское кафе',icon:'cafe',base:26,price:300,sell:220,max:8}
+];
+const UP=[
+ {id:'water',icon:'💧',name:'Автополив',desc:'+25% дохода',base:90,m:1},
+ {id:'market',icon:'🧺',name:'Рынок',desc:'+50% дохода',base:160,m:1},
+ {id:'worker',icon:'👩‍🌾',name:'Рабочие',desc:'+35% дохода',base:230,m:1},
+ {id:'tractor',icon:'🚜',name:'Трактор',desc:'+1 свободная клетка',base:400,m:1}
+];
+const QUESTS=[
+ {id:'build',icon:'🏗️',name:'Построй 5 объектов',target:5,reward:180},
+ {id:'earn',icon:'🪙',name:'Заработай 1000 монет',target:1000,reward:300},
+ {id:'merge',icon:'✨',name:'Сделай 3 объединения',target:3,reward:420}
+];
+const S={
+ coins:180,rep:0,grid:Array(20).fill(null),selected:[],
+ upgrades:{water:0,market:0,worker:0,tractor:0},
+ built:0,earned:0,merges:0,quests:{build:0,earn:0,merge:0},
+ claimed:{build:false,earn:false,merge:false},last:Date.now(),
+ gift:0,daily:0,started:true,tutorialDone:false,
+ settings:{sound:true},dialogsShown:{}
+};
+let state=Object.assign(S,JSON.parse(localStorage.getItem('happyFarmV2')||'null')||{});
+state.upgrades=Object.assign(S.upgrades,state.upgrades||{});
+state.quests=Object.assign(S.quests,state.quests||{});
+state.claimed=Object.assign(S.claimed,state.claimed||{});
+state.settings=Object.assign(S.settings,state.settings||{});
+state.dialogsShown=Object.assign(S.dialogsShown,state.dialogsShown||{});
+state.grid=Array.isArray(state.grid)?state.grid:Array(20).fill(null);
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.floor(n).toLocaleString('ru-RU');
+
+function save(){state.last=Date.now();localStorage.setItem('happyFarmV2',JSON.stringify(state))}
+
+/* ===== SOUND ===== */
+function playSound(type){
+ if(!state.settings.sound)return;
+ try{
+  const ctx=window._actx||(window._actx=new (window.AudioContext||window.webkitAudioContext)());
+  const freqs={click:440,build:520,merge:700,coin:620,quest:830,levelup:940,blip:380,sell:340};
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='sine';o.frequency.value=freqs[type]||500;g.gain.value=.06;
+  o.connect(g);g.connect(ctx.destination);o.start();
+  g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.18);
+  o.stop(ctx.currentTime+.2);
+ }catch(e){}
+}
+
+function svgIcon(type){
+ const common=`fill="none" stroke="#526453" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;
+ if(type==='wheat')return `<svg class="obj" viewBox="0 0 64 64"><path d="M32 55V13M32 28L21 18M32 36l12-11M32 44L20 34M32 50l13-11" ${common}/><path d="M18 17c5-3 8-1 9 5-5 1-8-1-9-5ZM45 23c-5-3-8-1-9 5 5 1 8-1 9-5ZM17 33c5-3 8-1 9 5-5 1-8-1-9-5ZM46 39c-5-3-8-1-9 5 5 1 8-1 9-5Z" fill="#e7c84f" stroke="#a78328" stroke-width="1.5"/></svg>`;
+ if(type==='cow')return `<svg class="obj" viewBox="0 0 64 64"><path d="M12 30q0-15 20-15t20 15v18H12z" fill="#fff" stroke="#526453" stroke-width="2.5"/><path d="M17 25q8-8 14 0M33 25q8-8 14 0" ${common}/><circle cx="25" cy="32" r="2.2" fill="#526453"/><circle cx="40" cy="32" r="2.2" fill="#526453"/><path d="M28 40q4 4 8 0" ${common}/><path d="M14 20l-6-5M50 20l6-5" ${common}/><path d="M20 48v6M44 48v6" ${common}/></svg>`;
+ if(type==='mill')return `<svg class="obj" viewBox="0 0 64 64"><path d="M13 28h38v27H13z" fill="#e4bd76" stroke="#526453" stroke-width="2.5"/><path d="M10 29L32 11l22 18" fill="#f2d18d" stroke="#526453" stroke-width="2.5"/><circle cx="32" cy="30" r="5" fill="#fff" stroke="#526453" stroke-width="2"/><path d="M32 25L21 17M37 30l10-9M32 35l-10 9M27 30L16 40" ${common}/></svg>`;
+ if(type==='apple')return `<svg class="obj" viewBox="0 0 64 64"><path d="M32 20c-14-5-22 6-18 21 4 14 13 18 18 10 5 8 14 4 18-10 4-15-4-26-18-21Z" fill="#d96c52" stroke="#526453" stroke-width="2.5"/><path d="M32 20c0-8 6-11 12-11" ${common}/><path d="M42 10q-7-5-12 3" fill="#79b86e" stroke="#526453" stroke-width="2"/></svg>`;
+ if(type==='barn')return `<svg class="obj" viewBox="0 0 64 64"><path d="M10 28L32 10l22 18v27H10z" fill="#d9825c" stroke="#526453" stroke-width="2.5"/><path d="M25 55V37h14v18" fill="#f4d58e" stroke="#526453" stroke-width="2"/><path d="M15 30h34M21 23h22" ${common}/></svg>`;
+ return `<svg class="obj" viewBox="0 0 64 64"><path d="M9 29q5-13 23-13t23 13v27H9z" fill="#f0c55c" stroke="#526453" stroke-width="2.5"/><path d="M16 29h32v20H16z" fill="#fff7df" stroke="#526453" stroke-width="2"/><circle cx="25" cy="38" r="3" fill="#d96c52"/><circle cx="39" cy="38" r="3" fill="#79b86e"/><path d="M21 48h22" ${common}/></svg>`;
+}
+function mentorAvatar(){
+ return `<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="19" fill="#f4cf9b" stroke="#526453" stroke-width="2.2"/><path d="M11 30q4-17 21-17t21 17q-4-5-42 0Z" fill="#8e684d" stroke="#526453" stroke-width="2.2"/><path d="M9 29q23-11 46 0" fill="none" stroke="#526453" stroke-width="2"/><circle cx="25" cy="37" r="2.1" fill="#526453"/><circle cx="39" cy="37" r="2.1" fill="#526453"/><path d="M25 45q7 5 14 0" fill="none" stroke="#526453" stroke-width="2.2" stroke-linecap="round"/><path d="M16 33q3-3 6 0M42 33q3-3 6 0" fill="none" stroke="#526453" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+}
+function baseIncome(){
+ return state.grid.reduce((sum,v)=>v?sum+TYPES.find(t=>t.id===v.id).base*v.level:sum,0);
+}
+function income(){
+ let x=baseIncome();
+ x*=1+state.upgrades.water*.25+state.upgrades.worker*.35+state.upgrades.market*.50;
+ return x;
+}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>e.classList.remove('show'),1500)}
+function floatAt(el,text){
+ const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='float';f.textContent=text;
+ f.style.left=(r.left+r.width/2-15)+'px';f.style.top=(r.top+8)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),900);
+}
+function render(){
+ $('#coins').textContent=fmt(state.coins);$('#rep').textContent=fmt(state.rep);$('#income').textContent=fmt(income())+'/с';
+ $('#level').textContent=1+Math.floor(state.rep/500);
+ const raw=baseIncome(), mult=raw?income()/raw:1;
+ $('#mult').textContent=mult.toFixed(1);
+ const empty=state.grid.filter(x=>!x).length;
+ $('#free').textContent=empty+' свободно';
+ const cost=25+state.built*7;
+ $('#buildCost').textContent=fmt(cost);
+ $('#buildBtn').disabled=empty===0||state.coins<cost;
+ $('#mergeBtn').disabled=state.selected.length!==2;
+ $('#sellBtn').disabled=state.selected.length!==1||!state.grid[state.selected[0]];
+ const grid=$('#grid');grid.innerHTML='';
+ state.grid.forEach((v,i)=>{
+  const b=document.createElement('button');b.className='cell'+(!v?' empty ':' ')+(state.selected.includes(i)?'selected ':'');
+  if(!v)b.innerHTML='<span class="plus">+</span>';
+  else{
+   const t=TYPES.find(x=>x.id===v.id);
+   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${t.base*v.level}</span><span class="tag">${t.name}</span>`;
+  }
+  b.onclick=()=>selectCell(i);
+  grid.appendChild(b);
+ });
+ renderQuests();renderUpgrades();save();
+}
+function selectCell(i){
+ if(!state.grid[i]){buildAt(i);return}
+ if(state.selected.includes(i)) state.selected=state.selected.filter(x=>x!==i);
+ else {if(state.selected.length>=2)state.selected.shift();state.selected.push(i)}
+ if(state.selected.length===1)openObject(i); else render();
+}
+function buildAt(i){
+ const cost=25+state.built*7;
+ if(state.coins<cost){toast('Не хватает монет');return}
+ state.coins-=cost;state.built++;state.rep+=10;state.quests.build=Math.min(5,state.quests.build+1);
+ const unlocked=TYPES.filter(t=>t.price<=cost+70);const t=unlocked[Math.floor(Math.random()*unlocked.length)];
+ state.grid[i]={id:t.id,level:1};
+ const cell=$('#grid').children[i];if(cell)cell.classList.add('new');
+ playSound('build');
+ toast(t.icon==='wheat'?'🌾 Новое поле!':'🏗️ '+t.name);render();
+ if(state.built===1&&!state.dialogsShown.firstBuild){
+  state.dialogsShown.firstBuild=true;
+  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Отличное начало! Твоя первая постройка уже приносит монеты каждую секунду.','Строй ещё — а когда у тебя появятся два одинаковых объекта одного уровня, попробуй их объединить.']});
+ }
+}
+$('#buildBtn').onclick=()=>{const i=state.grid.findIndex(x=>!x);if(i>=0)buildAt(i)}
+function mergeSelected(){
+ if(state.selected.length!==2){toast('Выбери два одинаковых объекта');return}
+ const [a,b]=state.selected, A=state.grid[a],B=state.grid[b];
+ if(!A||!B||A.id!==B.id||A.level!==B.level){toast('Нужны два одинаковых объекта одного уровня');return}
+ if(A.level>=8){toast('Максимальный уровень');return}
+ state.grid[a]={id:A.id,level:A.level+1};state.grid[b]=null;state.selected=[];state.merges++;state.quests.merge=Math.min(3,state.quests.merge+1);state.rep+=35;
+ playSound('merge');
+ toast('✨ Объекты объединены! Ур. '+(A.level+1));render();
+ if(state.merges===1&&!state.dialogsShown.firstMerge){
+  state.dialogsShown.firstMerge=true;
+  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Вот это объединение! Так постройки становятся мощнее без лишних клеток.','Продолжай объединять — на высоких уровнях доход растёт очень быстро.']});
+ }
+}
+$('#mergeBtn').onclick=mergeSelected;
+$('#sellBtn').onclick=()=>{
+ const i=state.selected[0],v=state.grid[i];if(!v)return;const t=TYPES.find(x=>x.id===v.id);
+ state.coins+=t.sell*v.level;state.grid[i]=null;state.selected=[];playSound('sell');toast('Продано за '+fmt(t.sell*v.level)+' 🪙');render();
+};
+function openObject(i){
+ const v=state.grid[i],t=TYPES.find(x=>x.id===v.id);
+ $('#modalContent').innerHTML=`<img class="modalIcon" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgIcon(t.icon).replace('class="obj"',''))}">
+ <h2>${t.name}</h2><div class="muted">Уровень ${v.level} • приносит ${t.base*v.level} 🪙/с</div>
+ <div class="reward">Чтобы объединить: выбери ещё один такой же объект уровня ${v.level}. Максимальный уровень: 8.</div>
+ <button class="btn primary" id="modalSelect">Выбрать для объединения</button>`;
+ $('#modal').classList.add('show');$('#modalSelect').onclick=()=>{$('#modal').classList.remove('show');state.selected=[i];render()}
+}
+function renderQuests(){
+ $('#quests').innerHTML=QUESTS.map(q=>{
+  const p=Math.min(q.target,state.quests[q.id]||0),done=p>=q.target,claimed=state.claimed[q.id];
+  return `<div class="quest"><div class="qicon">${q.icon}</div><div class="qbody"><b>${q.name}</b><small>${p}/${q.target}</small><div class="bar"><i style="width:${p/q.target*100}%"></i></div></div><button class="btn" ${(!done||claimed)?'disabled':''} onclick="claimQuest('${q.id}')">${claimed?'✓':'+'+q.reward+' 🪙'}</button></div>`
+ }).join('');
+}
+window.claimQuest=id=>{
+ const q=QUESTS.find(x=>x.id===id);if(!q||state.claimed[id]||(state.quests[id]||0)<q.target)return;
+ state.claimed[id]=true;state.coins+=q.reward;state.rep+=50;playSound('quest');toast('🏆 Награда получена!');render();
+ const anyClaimedBefore=Object.keys(state.claimed).filter(k=>k!==id&&state.claimed[k]).length;
+ if(anyClaimedBefore===0&&!state.dialogsShown.firstQuest){
+  state.dialogsShown.firstQuest=true;
+  queueDialog({name:'Соня',role:'Торговка',lines:['Заказ выполнен, красота! Такие заказы — самый быстрый способ разбогатеть в начале игры.','Следи за новыми заказами — они появляются снова и снова.']});
+ }
+};
+function renderUpgrades(){
+ $('#shop').innerHTML=UP.map(u=>{const lvl=state.upgrades[u.id]||0,cost=u.base*(lvl+1);return `<div class="shopItem" onclick="buyUpgrade('${u.id}')"><strong>${u.icon} ${u.name}</strong><small>${u.desc}</small><b>ур.${lvl} · ${fmt(cost)} 🪙</b></div>`}).join('');
+}
+window.buyUpgrade=id=>{
+ const u=UP.find(x=>x.id===id),lvl=state.upgrades[id]||0,cost=u.base*(lvl+1);
+ if(state.coins<cost){toast('Нужно больше монет');return}
+ state.coins-=cost;state.upgrades[id]=lvl+1;state.rep+=35;playSound('coin');toast('⬆️ Улучшение куплено');render();
+ if(!state.dialogsShown.firstUpgrade){
+  state.dialogsShown.firstUpgrade=true;
+  queueDialog({name:'Роман',role:'Механик',lines:['Хороший выбор! Улучшения работают на всю ферму сразу и держатся навсегда.','Копи монеты на остальные — вместе они дают серьёзный прирост дохода.']});
+ }
+};
+function checkOffline(){
+ const now=Date.now(),seconds=Math.max(0,Math.min(60*60*8,(now-(state.last||now))/1000));
+ if(seconds<30)return;
+ const reward=Math.floor(income()*seconds*.65);
+ if(reward>0){$('#offlineReward').innerHTML=`За время отсутствия ферма заработала <b>${fmt(reward)} 🪙</b>.<br><span class="muted">Мы учитываем до 8 часов офлайн-дохода.</span>`;$('#offline').classList.add('show');$('#offlineOk').onclick=()=>{state.coins+=reward;state.earned+=reward;state.quests.earn=Math.min(1000,state.quests.earn+reward);$('#offline').classList.remove('show');render()}}
+}
+$('#giftBtn').onclick=()=>{
+ if(Date.now()-state.gift<120000){toast('🎁 Сундук ещё не готов');return}
+ state.gift=Date.now();const r=120+Math.floor(Math.random()*280);state.coins+=r;state.rep+=15;playSound('coin');toast('🎁 +'+r+' 🪙');render();
+ if(!state.dialogsShown.firstGift){
+  state.dialogsShown.firstGift=true;
+  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Сундук фермера обновляется каждые 2 минуты — не забывай заглядывать за наградой.']});
+ }
+};
+$('#dailyBtn').onclick=()=>{
+ const day=new Date().toDateString();
+ if(state.daily===day){toast('📅 Уже получено сегодня');return}
+ state.daily=day;const r=300+state.upgrades.market*80;state.coins+=r;state.rep+=30;playSound('coin');toast('📅 Ежедневная награда +'+r+' 🪙');render();
+};
+$('#resetBtn').onclick=()=>{if(confirm('Сбросить всю ферму?')){localStorage.removeItem('happyFarmV2');location.reload()}}
+$('#close').onclick=()=>$('#modal').classList.remove('show');
+$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.tab).classList.add('active')});
+
+window.YandexGames={
+ async init(){
+  try{if(window.YaGames){window.yg=await YaGames.init();return window.yg}}catch(e){}
+  return null;
+ },
+ showRewarded:async()=>{try{return window.yg?.adv?.showRewardedVideo({callbacks:{onOpen:()=>{},onRewarded:()=>{},onClose:()=>{},onError:()=>{}}})}catch(e){}}
+};
+
+/* ===== META SYSTEMS: menu / tutorial / dialogs / start screen ===== */
+const META={tutorialStep:0,entered:false,dialogOpen:false};
+const DLGQ=[];
+
+function metaOpen(id){const e=document.getElementById(id);if(e)e.classList.add('show')}
+function metaClose(id){const e=document.getElementById(id);if(e)e.classList.remove('show')}
+
+/* --- dialog engine (NPC speech bubbles) --- */
+function queueDialog(opts){DLGQ.push(opts);if(!META.dialogOpen)nextDialog()}
+function nextDialog(){
+ if(DLGQ.length===0){META.dialogOpen=false;return}
+ META.dialogOpen=true;
+ showDialogNow(DLGQ.shift());
+}
+function showDialogNow(opts){
+ let i=0;
+ const nameEl=$('#dlgName'),roleEl=$('#dlgRole'),textEl=$('#dlgText'),avatarEl=$('#dlgAvatar'),btn=$('#dlgNext'),dotsEl=$('#dlgDots');
+ nameEl.textContent=opts.name;roleEl.textContent=opts.role||'';avatarEl.innerHTML=opts.avatar||mentorAvatar();
+ function paint(){
+  textEl.textContent=opts.lines[i];
+  btn.textContent=i===opts.lines.length-1?(opts.closeLabel||'Понятно'):'Далее';
+  dotsEl.innerHTML=opts.lines.map((_,idx)=>`<span class="tutDot ${idx===i?'active':''}"></span>`).join('');
+ }
+ btn.onclick=()=>{
+  playSound('blip');
+  if(i<opts.lines.length-1){i++;paint()}
+  else{
+   metaClose('dialogOverlay');
+   if(opts.onClose)opts.onClose();
+   setTimeout(nextDialog,250);
+  }
+ };
+ paint();
+ metaOpen('dialogOverlay');
+}
+
+/* --- tutorial (multi-step, mentor-guided) --- */
+function metaTutorialRender(){
+ const steps=[...document.querySelectorAll('.tutStep')];
+ steps.forEach((s,i)=>s.classList.toggle('active',i===META.tutorialStep));
+ const dots=$('#tutDots');
+ if(dots)dots.innerHTML=steps.map((_,i)=>`<span class="tutDot ${i===META.tutorialStep?'active':''}"></span>`).join('');
+ $('#tutBack').disabled=META.tutorialStep===0;
+ $('#tutNext').textContent=META.tutorialStep===steps.length-1?'Начать игру':'Далее';
+}
+function metaOpenTutorial(){
+ META.tutorialStep=0;
+ const av=$('#tutMentorAvatar');if(av)av.innerHTML=mentorAvatar();
+ metaTutorialRender();metaOpen('tutorialOverlay');
+}
+$('#tutNext').onclick=()=>{
+ playSound('click');
+ const max=document.querySelectorAll('.tutStep').length-1;
+ if(META.tutorialStep<max){META.tutorialStep++;metaTutorialRender()}
+ else{metaClose('tutorialOverlay');state.tutorialDone=true;render();save()}
+};
+$('#tutBack').onclick=()=>{if(META.tutorialStep>0){META.tutorialStep--;metaTutorialRender()}};
+
+/* --- book / stats / expand --- */
+function metaOpenBook(){
+ const unlockedCost=25+state.built*7+70;
+ $('#collection').innerHTML=TYPES.map(t=>{
+   const unlocked=(state.built>0 && (t.price<=unlockedCost || state.grid.some(x=>x&&x.id===t.id)));
+   return `<div class="collectionItem ${unlocked?'':'locked'}"><div class="ci">${svgIcon(t.icon)}</div><b style="font-size:9px">${unlocked?t.name:'???'}</b><small style="font-size:8px;color:#7a887d">${unlocked?'доход '+t.base+'/с':'строй больше'}</small></div>`;
+ }).join('');
+ metaOpen('bookOverlay');
+}
+function metaOpenStats(){
+ const maxLevel=Math.max(1,...state.grid.filter(Boolean).map(x=>x.level));
+ const occupied=state.grid.filter(Boolean).length;
+ $('#statsContent').innerHTML=`
+  <div class="statLine"><span>Монет сейчас</span><b>${fmt(state.coins)}</b></div>
+  <div class="statLine"><span>Доход в секунду</span><b>${fmt(income())}</b></div>
+  <div class="statLine"><span>Построено объектов</span><b>${state.built}</b></div>
+  <div class="statLine"><span>Объединений</span><b>${state.merges}</b></div>
+  <div class="statLine"><span>Максимальный уровень</span><b>${maxLevel}</b></div>
+  <div class="statLine"><span>Занято клеток</span><b>${occupied}/${state.grid.length}</b></div>
+  <div class="statLine"><span>Заработано всего</span><b>${fmt(state.earned)}</b></div>
+  <div class="statLine"><span>Репутация</span><b>${fmt(state.rep)}</b></div>`;
+ metaOpen('statsOverlay');
+}
+function metaOpenExpand(){
+ const current=state.grid.length, next=current<25?25:current<30?30:current<35?35:current;
+ const cost=current<25?600:current<30?1800:current<35?5000:Infinity;
+ $('#expandContent').innerHTML=`
+  <div class="expandInfo"><div><b>Открыто клеток</b><div class="progressBig"><i style="width:${Math.min(100,current/35*100)}%"></i></div></div><span class="badge">${current}/35</span></div>
+  <div class="notice">${current>=35?'🎉 Вся территория открыта!':'Новый участок откроет '+(next-current)+' дополнительных клеток.'}</div>
+  <button class="btn primary" id="expandBuy" ${current>=35||state.coins<cost?'disabled':''}>${current>=35?'Территория полностью открыта':'Открыть участок · '+fmt(cost)+' 🪙'}</button>`;
+ $('#expandBuy').onclick=()=>{
+   if(state.coins<cost)return;
+   state.coins-=cost;
+   for(let i=current;i<next;i++)state.grid.push(null);
+   state.rep+=100;
+   playSound('levelup');
+   toast('🗺️ Новый участок открыт!');
+   metaOpenExpand();render();
+   if(!state.dialogsShown.firstExpand){
+    state.dialogsShown.firstExpand=true;
+    queueDialog({name:'Мила',role:'Садовница',lines:['Земли стало больше! Теперь есть где разместить новые постройки.']});
+   }
+ };
+ metaOpen('expandOverlay');
+}
+
+/* --- settings / about --- */
+function renderSoundBtn(){$('#soundToggleBtn').textContent=state.settings.sound?'Включены':'Выключены'}
+$('#soundToggleBtn').onclick=()=>{state.settings.sound=!state.settings.sound;renderSoundBtn();save();playSound('click')};
+$('#settingsResetBtn').onclick=()=>{if(confirm('Точно сбросить весь прогресс? Это действие нельзя отменить.')){localStorage.removeItem('happyFarmV2');location.reload()}};
+
+/* --- menu wiring --- */
+$('#continueBtn').onclick=()=>metaClose('menuOverlay');
+$('#tutorialBtn').onclick=()=>{metaClose('menuOverlay');metaOpenTutorial()};
+$('#bookBtn').onclick=()=>{metaClose('menuOverlay');metaOpenBook()};
+$('#statsBtn').onclick=()=>{metaClose('menuOverlay');metaOpenStats()};
+$('#expandBtn').onclick=()=>{metaClose('menuOverlay');metaOpenExpand()};
+$('#saveBtn').onclick=()=>{save();playSound('click');toast('💾 Прогресс сохранён')};
+$('#menuSettingsBtn').onclick=()=>{metaClose('menuOverlay');renderSoundBtn();metaOpen('settingsOverlay')};
+$('#menuAboutBtn').onclick=()=>{metaClose('menuOverlay');metaOpen('aboutOverlay')};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>metaClose(b.dataset.close));
+$('#menuBtn').onclick=()=>{playSound('click');metaOpen('menuOverlay')};
+
+/* --- farm level progress + contextual tips --- */
+function metaProgress(){
+ const xp=state.rep, lvl=1+Math.floor(xp/500), cur=xp%500;
+ const titles=['Маленькая ферма','Деревенский хозяин','Успешный фермер','Магнат полей','Король урожая','Легенда долины'];
+ $('#farmLevel').textContent=lvl;
+ $('#farmXP').textContent=cur+' / 500 XP';
+ $('#farmProgress').style.width=(cur/500*100)+'%';
+ $('#farmTitle').textContent=titles[Math.min(titles.length-1,lvl-1)] || 'Легенда долины';
+ if(lvl>=2 && !state.dialogsShown.levelUp2 && state.tutorialDone){
+  state.dialogsShown.levelUp2=true;
+  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Твоя ферма выросла — уровень '+lvl+'!','Чем выше уровень фермы, тем ценнее заказы и доступнее улучшения.']});
+ }
+}
+function metaChecks(){
+ const empty=state.grid.filter(x=>!x).length;
+ if(empty===0 && state.built>0 && !state.dialogsShown.noSpace){
+  state.dialogsShown.noSpace=true;
+  queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Свободных клеток не осталось!','Объединяй одинаковые постройки одного уровня, чтобы освободить место, или открой новый участок земли через меню ☰ → «Расширение».']});
+ }
+}
+const baseRender=render;
+render=function(){baseRender();metaProgress();metaChecks()};
+
+/* --- start screen --- */
+function hasSave(){
+ try{const raw=localStorage.getItem('happyFarmV2');if(!raw)return false;const d=JSON.parse(raw);return !!(d&&(d.built>0||d.tutorialDone))}catch(e){return false}
+}
+function initStartScreen(){
+ const save_=hasSave();
+ $('#startPlayBtn').textContent=save_?'▶️ Продолжить':'▶️ Играть';
+ $('#startResetBtn').style.display=save_?'inline-block':'none';
+ $('#startPlayBtn').onclick=()=>{
+  playSound('click');
+  metaClose('startScreen');
+  $('#app').style.display='';
+  enterGame();
+ };
+ $('#startSettingsBtn').onclick=()=>{renderSoundBtn();metaOpen('settingsOverlay')};
+ $('#startAboutBtn').onclick=()=>metaOpen('aboutOverlay');
+ $('#startResetBtn').onclick=()=>{if(confirm('Точно начать заново? Весь текущий прогресс будет удалён.')){localStorage.removeItem('happyFarmV2');location.reload()}};
+}
+function enterGame(){
+ if(META.entered)return;META.entered=true;
+ checkOffline();
+ if(!state.tutorialDone){
+  setTimeout(()=>{
+    if(!state.grid.some(Boolean)){
+      state.coins=250;
+      state.grid[0]={id:'wheat',level:1};
+      state.rep=20;
+    }
+    metaOpenTutorial();
+    render();
+  },350);
+ }
+}
+
+render();save();renderSoundBtn();initStartScreen();
+
+let lastTick=Date.now();
+setInterval(()=>{
+ const now=Date.now(),dt=Math.min(5,(now-lastTick)/1000);lastTick=now;
+ const gain=income()*dt;state.coins+=gain;state.earned+=gain;state.quests.earn=Math.min(1000,state.quests.earn+gain);
+ render();
+},1000);
+</script>
+</body>
+</html>

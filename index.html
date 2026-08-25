@@ -12,6 +12,7 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+button,.shopItem{touch-action:manipulation}
 body{
  background:
  radial-gradient(circle at 10% 8%,rgba(255,255,255,.8) 0 3%,transparent 3.5%),
@@ -26,7 +27,7 @@ button{font:inherit;color:inherit}
 .logoRow{display:flex;align-items:center;gap:9px;font-weight:1000}
 .logo{width:40px;height:40px;border:2px solid #607061;border-radius:12px;background:#d8ecd0;display:grid;place-items:center}
 .logo svg{width:31px;height:31px}
-.iconBtn{width:38px;height:38px;border:2px solid #7c897d;background:#fff;border-radius:11px;display:grid;place-items:center;cursor:pointer}
+.iconBtn{width:44px;height:44px;border:2px solid #7c897d;background:#fff;border-radius:12px;display:grid;place-items:center;cursor:pointer}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
 .stat{background:#fff;border:2px solid #d2d9c9;border-radius:10px;padding:5px 7px}
 .stat small{display:block;font-size:9px;color:var(--muted);font-weight:900;text-transform:uppercase}
@@ -63,18 +64,18 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 .quest{display:flex;align-items:center;gap:8px;border:2px solid #cbd4c5;border-radius:10px;padding:8px;background:#f8f9ef;margin-top:6px}
 .qicon{font-size:22px}.qbody{flex:1;min-width:0}.qbody b{font-size:11px}.qbody small{display:block;font-size:9px;color:var(--muted)}
 .questHead{display:flex;justify-content:space-between;align-items:center;gap:6px}
-.questReroll{border:0;background:transparent;font-size:13px;cursor:pointer;opacity:.55;padding:2px 4px;flex:0 0 auto}
+.questReroll{border:0;background:transparent;font-size:15px;cursor:pointer;opacity:.55;flex:0 0 auto;width:40px;height:40px;display:grid;place-items:center}
 .questReroll:disabled{opacity:.2;cursor:not-allowed}
 .bar{height:6px;background:#dde5d9;border-radius:99px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:#72b86a}
 .shop{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shopItem{border:2px solid #ccd4c6;border-radius:10px;background:#f9f9ef;padding:8px;cursor:pointer}.shopItem strong{font-size:11px}.shopItem small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.shopItem b{display:block;margin-top:4px;font-size:10px;color:#9b7521}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.tab{border:2px solid #b7c3b4;background:#eef1e5;border-radius:9px;padding:7px;font-size:10px;font-weight:950;cursor:pointer}.tab.active{background:#f4cf56;border-color:#aa8a2b}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.tab{border:2px solid #b7c3b4;background:#eef1e5;border-radius:9px;padding:12px 7px;min-height:44px;font-size:10px;font-weight:950;cursor:pointer}.tab.active{background:#f4cf56;border-color:#aa8a2b}
 .section{display:none}.section.active{display:block}
 .float{position:fixed;z-index:90;pointer-events:none;color:#4a9845;font-weight:1000;font-size:14px;animation:floatUp .9s ease-out forwards;text-shadow:0 1px #fff}
 @keyframes floatUp{to{transform:translateY(-55px);opacity:0}}
-.modal{position:fixed;inset:0;background:rgba(30,43,32,.48);display:none;place-items:end center;z-index:220;padding:10px}.modal.show{display:grid}
+.modal{position:fixed;inset:0;background:rgba(30,43,32,.48);display:none;place-items:end center;z-index:220;padding:10px 10px max(10px,env(safe-area-inset-bottom)) 10px}.modal.show{display:grid}
 .card{width:min(480px,100%);background:#fffdf3;border:3px solid #536453;border-radius:20px;padding:14px;box-shadow:var(--shadow);animation:sheet .2s ease-out}
 @keyframes sheet{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-.close{float:right;border:0;background:transparent;font-size:24px;cursor:pointer}
+.close{float:right;border:0;background:transparent;font-size:24px;cursor:pointer;width:44px;height:44px;margin:-10px -10px 0 0;display:grid;place-items:center}
 .card h2{margin:0 0 5px;font-size:18px}.muted{color:var(--muted);font-size:11px}.modalIcon{width:90px;height:90px;display:block;margin:5px auto}
 .reward{background:#eef6e8;border:2px dashed #91b08b;padding:9px;border-radius:10px;margin:9px 0;font-size:11px}
 .offline{display:none;position:fixed;inset:0;background:rgba(30,43,32,.55);place-items:center;z-index:120;padding:16px}.offline.show{display:grid}.offline .card{text-align:center}
@@ -86,12 +87,12 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 /* ===== META / TUTORIAL / MENU ===== */
 .menuOverlay,.tutorialOverlay,.bookOverlay{position:fixed;inset:0;background:rgba(24,38,28,.58);display:none;place-items:center;z-index:200;padding:14px}
 .menuOverlay.show,.tutorialOverlay.show,.bookOverlay.show{display:grid}
-.menuCard,.tutorialCard,.bookCard{width:min(480px,100%);max-height:92vh;overflow:auto;background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:14px;box-shadow:0 18px 45px rgba(25,39,28,.28)}
+.menuCard,.tutorialCard,.bookCard{width:min(480px,100%);max-height:92vh;overflow:auto;overscroll-behavior:contain;background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:14px;box-shadow:0 18px 45px rgba(25,39,28,.28)}
 .menuCard h2,.tutorialCard h2,.bookCard h2{margin:0 0 4px}
 .menuGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .menuTile{border:2px solid #c6d0c1;border-radius:12px;background:#f7f8ed;padding:11px;text-align:left;cursor:pointer}
 .menuTile b{display:block;font-size:12px}.menuTile small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
-.closeBig{float:right;border:0;background:transparent;font-size:26px;cursor:pointer}
+.closeBig{float:right;border:0;background:transparent;font-size:26px;cursor:pointer;width:44px;height:44px;margin:-10px -10px 0 0;display:grid;place-items:center}
 .tutMentor{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:2px dashed #dbe3d5}
 .tutMentor b{display:block;font-size:11px}.tutMentor small{display:block;font-size:9px;color:var(--muted)}
 .tutStep{display:none}.tutStep.active{display:block}
@@ -155,7 +156,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 .startGhost{background:transparent;border:0;color:#43503f;text-decoration:underline;font-size:10px;cursor:pointer;padding:6px}
 
 /* ===== DIALOG (NPC) ===== */
-.dialogOverlay{position:fixed;inset:0;background:rgba(24,38,28,.55);display:none;place-items:end center;z-index:260;padding:12px}
+.dialogOverlay{position:fixed;inset:0;background:rgba(24,38,28,.55);display:none;place-items:end center;z-index:260;padding:12px 12px max(12px,env(safe-area-inset-bottom)) 12px}
 .dialogOverlay.show{display:grid}
 .dialogCard{width:min(480px,100%);background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:13px;box-shadow:var(--shadow);animation:sheet .2s ease-out;display:flex;gap:10px;align-items:flex-start}
 .dlgAvatar{flex:0 0 auto;width:54px;height:54px;border:2px solid #6c7b6d;border-radius:50%;background:#eef6e8;display:grid;place-items:center;overflow:hidden}

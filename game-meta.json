@@ -1,0 +1,24 @@
+{
+  "name": "Весёлая ферма — Merge Valley",
+  "version": "5.4",
+  "systems": [
+    "start-screen",
+    "tutorial",
+    "npc-dialogs",
+    "merge",
+    "resources",
+    "harvest-collect-sell",
+    "daily-weather",
+    "quests-self-refreshing",
+    "unlock-progression",
+    "build-picker",
+    "per-type-build-limits",
+    "cell-expansion",
+    "offline-income",
+    "world-map",
+    "leaderboard-local",
+    "music-and-sound",
+    "yandex-sdk",
+    "cloud-save"
+  ]
+}

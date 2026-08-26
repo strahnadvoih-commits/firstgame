@@ -69,7 +69,13 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 .questReroll:disabled{opacity:.2;cursor:not-allowed}
 .bar{height:6px;background:#dde5d9;border-radius:99px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:#72b86a}
 .shop{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shopItem{border:2px solid #ccd4c6;border-radius:10px;background:#f9f9ef;padding:8px;cursor:pointer}.shopItem strong{font-size:11px}.shopItem small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.shopItem b{display:block;margin-top:4px;font-size:10px;color:#9b7521}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.tab{border:2px solid #b7c3b4;background:#eef1e5;border-radius:9px;padding:12px 7px;min-height:44px;font-size:10px;font-weight:950;cursor:pointer}.tab.active{background:#f4cf56;border-color:#aa8a2b}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.tab{border:2px solid #b7c3b4;background:#eef1e5;border-radius:9px;padding:7px 2px;min-height:44px;font-weight:950;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.tab.active{background:#f4cf56;border-color:#aa8a2b}
+.tabIcon{font-size:15px;line-height:1}
+.tabLabel{font-size:8.5px;line-height:1;white-space:nowrap}
+.harvestBadge{position:absolute;left:3px;top:3px;font-size:14px;animation:harvestBounce .7s ease-in-out infinite alternate;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+@keyframes harvestBounce{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+.cell.harvestReady{animation:harvestGlow 1.3s ease-in-out infinite}
+@keyframes harvestGlow{0%,100%{box-shadow:0 0 0 3px rgba(245,207,83,.35),inset 0 2px rgba(255,255,255,.8)}50%{box-shadow:0 0 0 6px rgba(245,207,83,.5),inset 0 2px rgba(255,255,255,.8)}}
 .section{display:none}.section.active{display:block}
 .float{position:fixed;z-index:90;pointer-events:none;color:#4a9845;font-weight:1000;font-size:14px;animation:floatUp .9s ease-out forwards;text-shadow:0 1px #fff}
 @keyframes floatUp{to{transform:translateY(-55px);opacity:0}}
@@ -219,12 +225,14 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
  </div>
 
  <div class="tabs">
-  <button class="tab active" data-tab="orders">📜 Заказы</button>
-  <button class="tab" data-tab="upgrades">⬆️ Улучшения</button>
-  <button class="tab" data-tab="more">🎁 Бонусы</button>
+  <button class="tab active" data-tab="orders"><span class="tabIcon">📜</span><span class="tabLabel">Заказы</span></button>
+  <button class="tab" data-tab="harvest"><span class="tabIcon">🌾</span><span class="tabLabel">Урожай</span></button>
+  <button class="tab" data-tab="upgrades"><span class="tabIcon">⬆️</span><span class="tabLabel">Улучшения</span></button>
+  <button class="tab" data-tab="more"><span class="tabIcon">🎁</span><span class="tabLabel">Бонусы</span></button>
  </div>
 
  <section class="section active" id="orders"><div class="panel"><div class="panelTitle"><span>Заказы</span><small>обновляются сами</small></div><div id="quests"></div></div></section>
+ <section class="section" id="harvest"><div class="panel"><div class="panelTitle"><span>Урожай</span><small>тапни спелую постройку</small></div><div id="harvestList"></div><div class="notice">🌤️ Погода дня влияет на размер урожая — смотри бейдж наверху фермы.</div></div></section>
  <section class="section" id="upgrades"><div class="panel"><div class="panelTitle"><span>Улучшения фермы</span><small>уровень <span id="level">1</span></small></div><div class="shop" id="shop"></div></div></section>
  <section class="section" id="more">
   <div class="panel">
@@ -278,7 +286,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.2 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.3 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -295,7 +303,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <div class="tutStep" data-step="1">
     <span class="badge">ШАГ 2 ИЗ 7</span><h2>🏗️ Строительство</h2>
     <div class="tutArt"><div class="big">🏡</div></div>
-    <p>Нажимай на пустую клетку или кнопку «Построить». Объект начинает приносить монеты автоматически.</p>
+    <p>Нажимай на пустую клетку или кнопку «Построить». Объект начинает приносить монеты автоматически. Когда над ним загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
    </div>
    <div class="tutStep" data-step="2">
     <span class="badge">ШАГ 3 ИЗ 7</span><h2>✨ Объединение</h2>
@@ -390,12 +398,13 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.2</b></div>
+  <div class="statLine"><span>Версия</span><b>5.3</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
   <div class="notice">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Прокачивай уровень фермы, чтобы открывать районы на карте долины.</div>
   <div class="notice">🌤️ Погода дня: каждый день на ферме своя погода — она временно усиливает доход у подходящих построек. Загляни завтра — бонус будет другим.</div>
+  <div class="notice">🌾 Урожай: постройки время от времени созревают (загорается значок над клеткой) — тапни, чтобы собрать, и продай на вкладке «Урожай». Погода влияет на размер урожая.</div>
   <div class="notice">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
  </div>
 </div>
@@ -445,6 +454,14 @@ const TYPES=[
  {id:'barn',name:'Большой амбар',icon:'barn',base:17,price:195,sell:142,max:8},
  {id:'cafe',name:'Фермерское кафе',icon:'cafe',base:26,price:300,sell:220,max:8}
 ];
+const CROPS={
+ wheat:{id:'grain',icon:'🌾',name:'Зерно',price:4},
+ cow:{id:'milk',icon:'🥛',name:'Молоко',price:8},
+ mill:{id:'flour',icon:'🍚',name:'Мука',price:13},
+ orchard:{id:'apple',icon:'🍎',name:'Яблоки',price:20},
+ barn:{id:'wool',icon:'🧶',name:'Шерсть',price:28},
+ cafe:{id:'bread',icon:'🍞',name:'Выпечка',price:42}
+};
 const UP=[
  {id:'water',icon:'💧',name:'Автополив',desc:'+25% дохода',base:90,m:1},
  {id:'market',icon:'🧺',name:'Рынок',desc:'+50% дохода',base:160,m:1},
@@ -457,7 +474,8 @@ const QUEST_TEMPLATES=[
  {kind:'merge',icon:'✨',label:n=>`Сделай ${n} объединений`,base:3,step:2,coin:70,rep:20},
  {kind:'sell',icon:'💰',label:n=>`Продай ${n} построек`,base:2,step:1,coin:45,rep:10},
  {kind:'upgrade',icon:'⬆️',label:n=>`Купи ${n} улучшений`,base:2,step:1,coin:90,rep:18},
- {kind:'gift',icon:'🎁',label:n=>`Открой сундук ${n} раз`,base:2,step:1,coin:50,rep:10}
+ {kind:'gift',icon:'🎁',label:n=>`Открой сундук ${n} раз`,base:2,step:1,coin:50,rep:10},
+ {kind:'harvest',icon:'🌾',label:n=>`Собери ${n} урожая`,base:8,step:4,coin:55,rep:14}
 ];
 const MAP_NODES=[
  {id:'meadow',name:'Зелёный луг',icon:'🌾',level:1,bonus:.02,desc:'Начало пути. Отсюда стартует каждый фермер.'},
@@ -483,28 +501,34 @@ function todayKey(){const d=new Date();return d.getFullYear()*372+d.getMonth()*3
 function todayEvent(){return WEATHER_EVENTS[todayKey()%WEATHER_EVENTS.length]}
 function weatherMultiplier(typeId){const ev=todayEvent();if(ev.affects==='all')return ev.mult;return ev.affects.includes(typeId)?ev.mult:1}
 function objIncome(t,level){return t.base*level*(1+0.12*(level-1))}
+function harvestInterval(level){return Math.max(12,30-level*2)*1000}
+function isHarvestReady(v){return !!(v&&v.harvestAt&&Date.now()>=v.harvestAt)}
 const S={
  coins:180,rep:0,grid:Array(20).fill(null),selected:[],
  upgrades:{water:0,market:0,worker:0,tractor:0},
- built:0,earned:0,merges:0,sold:0,upgradesBought:0,giftsOpened:0,
+ built:0,earned:0,merges:0,sold:0,upgradesBought:0,giftsOpened:0,harvestCollected:0,
  activeQuests:[],questsCompleted:0,
+ inventory:{grain:0,milk:0,flour:0,apple:0,wool:0,bread:0},
  last:Date.now(),gift:0,daily:0,started:true,tutorialDone:false,
  settings:{sound:true,music:true},dialogsShown:{},mapClaimed:{},leaderboardBots:null,lastLevel:1,lastWeatherDay:0
 };
-const DEFAULTS={upgrades:{...S.upgrades},settings:{...S.settings},dialogsShown:{...S.dialogsShown},mapClaimed:{...S.mapClaimed}};
+const DEFAULTS={upgrades:{...S.upgrades},settings:{...S.settings},dialogsShown:{...S.dialogsShown},mapClaimed:{...S.mapClaimed},inventory:{...S.inventory}};
 const savedRaw=JSON.parse(localStorage.getItem('happyFarmV2')||'null')||{};
 let state=Object.assign(S,savedRaw);
 state.upgrades=Object.assign({},DEFAULTS.upgrades,state.upgrades||{});
 state.settings=Object.assign({},DEFAULTS.settings,state.settings||{});
 state.dialogsShown=Object.assign({},DEFAULTS.dialogsShown,state.dialogsShown||{});
 state.mapClaimed=Object.assign({},DEFAULTS.mapClaimed,state.mapClaimed||{});
+state.inventory=Object.assign({},DEFAULTS.inventory,state.inventory||{});
 state.grid=Array.isArray(state.grid)?state.grid:Array(20).fill(null);
 state.activeQuests=Array.isArray(state.activeQuests)?state.activeQuests:[];
 if(typeof state.sold!=='number')state.sold=0;
 if(typeof state.upgradesBought!=='number')state.upgradesBought=0;
 if(typeof state.giftsOpened!=='number')state.giftsOpened=0;
 if(typeof state.questsCompleted!=='number')state.questsCompleted=0;
+if(typeof state.harvestCollected!=='number')state.harvestCollected=0;
 if(!Object.keys(state.mapClaimed).length)state.mapClaimed[MAP_NODES[0].id]=true;
+state.grid.forEach(v=>{if(v&&!v.harvestAt)v.harvestAt=Date.now()+harvestInterval(v.level)});
 const $=s=>document.querySelector(s);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU');
 if(typeof savedRaw.lastLevel!=='number')state.lastLevel=levelFromXp(state.rep).level;
@@ -518,7 +542,7 @@ function playSound(type){
   const ctx=window._actx||(window._actx=new (window.AudioContext||window.webkitAudioContext)());
   const chords={
    click:[440],build:[520,655],merge:[523,659,784],coin:[620,780],
-   quest:[659,830,988],levelup:[523,659,784,988],blip:[380],sell:[340,428]
+   quest:[659,830,988],levelup:[523,659,784,988],blip:[380],sell:[340,428],harvest:[440,554,659]
   };
   const notes=chords[type]||[500],t=ctx.currentTime;
   notes.forEach((freq,idx)=>{
@@ -608,29 +632,50 @@ function render(){
  $('#sellBtn').disabled=state.selected.length!==1||!state.grid[state.selected[0]];
  const grid=$('#grid');grid.innerHTML='';
  state.grid.forEach((v,i)=>{
-  const b=document.createElement('button');b.className='cell'+(!v?' empty ':' ')+(state.selected.includes(i)?'selected ':'');
+  const b=document.createElement('button');
+  const ready=isHarvestReady(v);
+  b.className='cell'+(!v?' empty ':' ')+(state.selected.includes(i)?'selected ':'')+(ready?'harvestReady ':'');
   if(!v)b.innerHTML='<span class="plus">+</span>';
   else{
    const t=TYPES.find(x=>x.id===v.id);
-   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${Math.floor(objIncome(t,v.level)*weatherMultiplier(t.id))}</span><span class="tag">${t.name}</span>`;
+   const crop=CROPS[t.id];
+   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${Math.floor(objIncome(t,v.level)*weatherMultiplier(t.id))}</span><span class="tag">${t.name}</span>`+(ready&&crop?`<span class="harvestBadge">${crop.icon}</span>`:'');
   }
   b.onclick=()=>selectCell(i);
   grid.appendChild(b);
  });
- renderQuests();renderUpgrades();save();
+ renderQuests();renderUpgrades();renderHarvest();save();
 }
 function selectCell(i){
  if(!state.grid[i]){buildAt(i);return}
+ if(isHarvestReady(state.grid[i])){collectHarvest(i);return}
  if(state.selected.includes(i)) state.selected=state.selected.filter(x=>x!==i);
  else {if(state.selected.length>=2)state.selected.shift();state.selected.push(i)}
  if(state.selected.length===1)openObject(i); else render();
+}
+function collectHarvest(i){
+ const v=state.grid[i];if(!v||!isHarvestReady(v))return;
+ const t=TYPES.find(x=>x.id===v.id),crop=CROPS[t.id];
+ if(!crop)return;
+ const amount=Math.max(1,Math.round(v.level*weatherMultiplier(t.id)));
+ state.inventory[crop.id]=(state.inventory[crop.id]||0)+amount;
+ state.harvestCollected+=amount;
+ v.harvestAt=Date.now()+harvestInterval(v.level);
+ playSound('harvest');
+ const cellEl=$('#grid').children[i];if(cellEl)floatAt(cellEl,'+'+amount+' '+crop.icon);
+ toast('Собрано: +'+amount+' '+crop.icon+' '+crop.name);
+ render();
+ if(!state.dialogsShown.firstHarvest){
+  state.dialogsShown.firstHarvest=true;
+  queueDialog({name:'Мила',role:'Садовница',lines:['Отличный урожай! Он копится во вкладке 🌾 «Урожай» — продай его там за монеты.','Погода дня влияет на размер урожая: смотри на бейдж наверху фермы, чтобы собирать по максимуму.']});
+ }
 }
 function buildAt(i){
  const cost=25+state.built*7;
  if(state.coins<cost){toast('Не хватает монет');return}
  state.coins-=cost;state.built++;state.rep+=10;
  const unlocked=TYPES.filter(t=>t.price<=cost+70);const t=unlocked[Math.floor(Math.random()*unlocked.length)];
- state.grid[i]={id:t.id,level:1};
+ state.grid[i]={id:t.id,level:1,harvestAt:Date.now()+harvestInterval(1)};
  const cell=$('#grid').children[i];if(cell)cell.classList.add('new');
  playSound('build');
  toast(t.icon==='wheat'?'🌾 Новое поле!':'🏗️ '+t.name);render();
@@ -645,7 +690,7 @@ function mergeSelected(){
  const [a,b]=state.selected, A=state.grid[a],B=state.grid[b];
  if(!A||!B||A.id!==B.id||A.level!==B.level){toast('Нужны два одинаковых объекта одного уровня');return}
  if(A.level>=8){toast('Максимальный уровень');return}
- state.grid[a]={id:A.id,level:A.level+1};state.grid[b]=null;state.selected=[];state.merges++;state.rep+=35;
+ state.grid[a]={id:A.id,level:A.level+1,harvestAt:Date.now()+harvestInterval(A.level+1)};state.grid[b]=null;state.selected=[];state.merges++;state.rep+=35;
  playSound('merge');
  toast('✨ Объекты объединены! Ур. '+(A.level+1));render();
  if(state.merges===1&&!state.dialogsShown.firstMerge){
@@ -677,6 +722,7 @@ function counterValue(kind){
   case 'sell':return state.sold;
   case 'upgrade':return state.upgradesBought;
   case 'gift':return state.giftsOpened;
+  case 'harvest':return state.harvestCollected;
  }
  return 0;
 }
@@ -722,6 +768,19 @@ window.rerollQuest=id=>{
  playSound('click');toast('🔄 Задание заменено');render();
 };
 
+function renderHarvest(){
+ const el=$('#harvestList');if(!el)return;
+ el.innerHTML=Object.values(CROPS).map(c=>{
+  const n=state.inventory[c.id]||0;
+  return `<div class="quest"><div class="qicon">${c.icon}</div><div class="qbody"><b>${c.name}</b><small>${n} шт · ${c.price} 🪙/шт</small></div><button class="btn" ${n<1?'disabled':''} onclick="sellCrop('${c.id}')">Продать${n>0?' · +'+fmt(n*c.price)+' 🪙':''}</button></div>`;
+ }).join('');
+}
+window.sellCrop=id=>{
+ const c=Object.values(CROPS).find(x=>x.id===id);if(!c)return;
+ const n=state.inventory[id]||0;if(n<1)return;
+ state.coins+=n*c.price;state.inventory[id]=0;
+ playSound('coin');toast('💰 Продано за '+fmt(n*c.price)+' 🪙');render();
+};
 function renderUpgrades(){
  $('#shop').innerHTML=UP.map(u=>{const lvl=state.upgrades[u.id]||0,cost=u.base*(lvl+1);return `<div class="shopItem" onclick="buyUpgrade('${u.id}')"><strong>${u.icon} ${u.name}</strong><small>${u.desc}</small><b>ур.${lvl} · ${fmt(cost)} 🪙</b></div>`}).join('');
 }
@@ -902,6 +961,7 @@ function metaOpenStats(){
   <div class="statLine"><span>Построено объектов</span><b>${state.built}</b></div>
   <div class="statLine"><span>Объединений</span><b>${state.merges}</b></div>
   <div class="statLine"><span>Заказов выполнено</span><b>${state.questsCompleted}</b></div>
+  <div class="statLine"><span>Урожая собрано</span><b>${state.harvestCollected}</b></div>
   <div class="statLine"><span>Максимальный уровень постройки</span><b>${maxLevel}</b></div>
   <div class="statLine"><span>Занято клеток</span><b>${occupied}/${state.grid.length}</b></div>
   <div class="statLine"><span>Заработано всего</span><b>${fmt(state.earned)}</b></div>
@@ -985,7 +1045,7 @@ function claimMapNode(id){
 }
 
 /* --- leaderboard (local, vs. bot farmers) --- */
-function farmScore(){return Math.round(state.rep*2+state.built*12+state.merges*30+state.coins/8+farmLevel()*150)}
+function farmScore(){return Math.round(state.rep*2+state.built*12+state.merges*30+state.coins/8+farmLevel()*150+state.harvestCollected*2)}
 function ensureLeaderboard(){
  if(!Array.isArray(state.leaderboardBots)||state.leaderboardBots.length===0){
   state.leaderboardBots=BOT_NAMES.map((name,i)=>({name,score:400+Math.floor(Math.random()*3200)+i*140}));

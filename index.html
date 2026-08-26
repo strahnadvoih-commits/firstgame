@@ -197,7 +197,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 
 <main class="main">
  <div class="hero">
-  <div class="season">Сезон 1 • Летний урожай</div>
+  <div class="season" id="weatherBadge">Сезон 1 • Летний урожай</div>
   <h1>Развивайте ферму, объединяйте постройки</h1>
   <span class="pill">×<span id="mult">1.0</span> доход</span>
  </div>
@@ -278,7 +278,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.1 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.2 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -379,6 +379,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <h2>⚙️ Настройки</h2>
   <div class="muted">Управляй звуком и своим прогрессом.</div>
   <div class="toggleRow"><span>🔊 Звуковые эффекты</span><button class="btn" id="soundToggleBtn">Включены</button></div>
+  <div class="toggleRow"><span>🎵 Музыка</span><button class="btn" id="musicToggleBtn">Включена</button></div>
   <div class="notice">💾 Игра сохраняется автоматически в памяти этого браузера (localStorage). Если очистить данные сайта — прогресс будет потерян.</div>
   <button class="btn" id="settingsResetBtn" style="margin-top:10px;width:100%">🗑️ Сбросить весь прогресс</button>
  </div>
@@ -389,11 +390,12 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.1</b></div>
+  <div class="statLine"><span>Версия</span><b>5.2</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
   <div class="notice">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Прокачивай уровень фермы, чтобы открывать районы на карте долины.</div>
+  <div class="notice">🌤️ Погода дня: каждый день на ферме своя погода — она временно усиливает доход у подходящих построек. Загляни завтра — бонус будет другим.</div>
   <div class="notice">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
  </div>
 </div>
@@ -469,20 +471,33 @@ const MAP_NODES=[
  {id:'barn',name:'Старый амбар',icon:'🏚️',level:9,bonus:.08,desc:'Легендарные земли долины — вершина пути.'}
 ];
 const BOT_NAMES=['Аня','Игорь','Ольга','Тимур','Марина','Слава','Ксюша','Богдан','Люда'];
+const WEATHER_EVENTS=[
+ {id:'sunny',icon:'☀️',name:'Солнечно',affects:['wheat','orchard'],mult:1.2,desc:'пшеница и сад +20%'},
+ {id:'rain',icon:'🌧️',name:'Дождливо',affects:['cow'],mult:1.25,desc:'молочная ферма +25%'},
+ {id:'windy',icon:'💨',name:'Ветрено',affects:['mill'],mult:1.3,desc:'мельницы +30%'},
+ {id:'market_day',icon:'🎪',name:'Рыночный день',affects:'all',mult:1.15,desc:'весь доход +15%'},
+ {id:'harvest',icon:'🍂',name:'Сбор урожая',affects:['wheat','cow','orchard'],mult:1.2,desc:'поля, ферма и сад +20%'},
+ {id:'calm',icon:'🌤️',name:'Тихий день',affects:[],mult:1,desc:'без бонусов — обычный день'}
+];
+function todayKey(){const d=new Date();return d.getFullYear()*372+d.getMonth()*31+d.getDate()}
+function todayEvent(){return WEATHER_EVENTS[todayKey()%WEATHER_EVENTS.length]}
+function weatherMultiplier(typeId){const ev=todayEvent();if(ev.affects==='all')return ev.mult;return ev.affects.includes(typeId)?ev.mult:1}
+function objIncome(t,level){return t.base*level*(1+0.12*(level-1))}
 const S={
  coins:180,rep:0,grid:Array(20).fill(null),selected:[],
  upgrades:{water:0,market:0,worker:0,tractor:0},
  built:0,earned:0,merges:0,sold:0,upgradesBought:0,giftsOpened:0,
  activeQuests:[],questsCompleted:0,
  last:Date.now(),gift:0,daily:0,started:true,tutorialDone:false,
- settings:{sound:true},dialogsShown:{},mapClaimed:{},leaderboardBots:null,lastLevel:1
+ settings:{sound:true,music:true},dialogsShown:{},mapClaimed:{},leaderboardBots:null,lastLevel:1,lastWeatherDay:0
 };
+const DEFAULTS={upgrades:{...S.upgrades},settings:{...S.settings},dialogsShown:{...S.dialogsShown},mapClaimed:{...S.mapClaimed}};
 const savedRaw=JSON.parse(localStorage.getItem('happyFarmV2')||'null')||{};
 let state=Object.assign(S,savedRaw);
-state.upgrades=Object.assign(S.upgrades,state.upgrades||{});
-state.settings=Object.assign(S.settings,state.settings||{});
-state.dialogsShown=Object.assign(S.dialogsShown,state.dialogsShown||{});
-state.mapClaimed=Object.assign(S.mapClaimed,state.mapClaimed||{});
+state.upgrades=Object.assign({},DEFAULTS.upgrades,state.upgrades||{});
+state.settings=Object.assign({},DEFAULTS.settings,state.settings||{});
+state.dialogsShown=Object.assign({},DEFAULTS.dialogsShown,state.dialogsShown||{});
+state.mapClaimed=Object.assign({},DEFAULTS.mapClaimed,state.mapClaimed||{});
 state.grid=Array.isArray(state.grid)?state.grid:Array(20).fill(null);
 state.activeQuests=Array.isArray(state.activeQuests)?state.activeQuests:[];
 if(typeof state.sold!=='number')state.sold=0;
@@ -496,19 +511,46 @@ if(typeof savedRaw.lastLevel!=='number')state.lastLevel=levelFromXp(state.rep).l
 
 function save(){state.last=Date.now();localStorage.setItem('happyFarmV2',JSON.stringify(state))}
 
-/* ===== SOUND ===== */
+/* ===== SOUND & MUSIC ===== */
 function playSound(type){
  if(!state.settings.sound)return;
  try{
   const ctx=window._actx||(window._actx=new (window.AudioContext||window.webkitAudioContext)());
-  const freqs={click:440,build:520,merge:700,coin:620,quest:830,levelup:940,blip:380,sell:340};
-  const o=ctx.createOscillator(),g=ctx.createGain();
-  o.type='sine';o.frequency.value=freqs[type]||500;g.gain.value=.06;
-  o.connect(g);g.connect(ctx.destination);o.start();
-  g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.18);
-  o.stop(ctx.currentTime+.2);
+  const chords={
+   click:[440],build:[520,655],merge:[523,659,784],coin:[620,780],
+   quest:[659,830,988],levelup:[523,659,784,988],blip:[380],sell:[340,428]
+  };
+  const notes=chords[type]||[500],t=ctx.currentTime;
+  notes.forEach((freq,idx)=>{
+   const o=ctx.createOscillator(),g=ctx.createGain();
+   o.type='sine';o.frequency.value=freq;
+   const start=t+idx*0.03,peak=.05/Math.sqrt(notes.length);
+   g.gain.setValueAtTime(0,start);
+   g.gain.linearRampToValueAtTime(peak,start+.02);
+   g.gain.exponentialRampToValueAtTime(.0001,start+.22);
+   o.connect(g);g.connect(ctx.destination);o.start(start);o.stop(start+.24);
+  });
  }catch(e){}
 }
+let musicTimer=null,musicStep=0;
+function startMusic(){
+ if(!state.settings.music||musicTimer)return;
+ try{
+  const ctx=window._actx||(window._actx=new (window.AudioContext||window.webkitAudioContext)());
+  const scale=[261.63,293.66,329.63,392.00,440.00,392.00,329.63,293.66];
+  musicTimer=setInterval(()=>{
+   if(!state.settings.music)return;
+   const freq=scale[musicStep%scale.length];musicStep++;
+   const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime;
+   o.type='triangle';o.frequency.value=freq;
+   g.gain.setValueAtTime(0,t);
+   g.gain.linearRampToValueAtTime(.035,t+.08);
+   g.gain.exponentialRampToValueAtTime(.0001,t+1.1);
+   o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+1.2);
+  },850);
+ }catch(e){}
+}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
 
 function svgIcon(type){
  const common=`fill="none" stroke="#526453" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;
@@ -523,7 +565,14 @@ function mentorAvatar(){
  return `<svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="19" fill="#f4cf9b" stroke="#526453" stroke-width="2.2"/><path d="M11 30q4-17 21-17t21 17q-4-5-42 0Z" fill="#8e684d" stroke="#526453" stroke-width="2.2"/><path d="M9 29q23-11 46 0" fill="none" stroke="#526453" stroke-width="2"/><circle cx="25" cy="37" r="2.1" fill="#526453"/><circle cx="39" cy="37" r="2.1" fill="#526453"/><path d="M25 45q7 5 14 0" fill="none" stroke="#526453" stroke-width="2.2" stroke-linecap="round"/><path d="M16 33q3-3 6 0M42 33q3-3 6 0" fill="none" stroke="#526453" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 }
 function baseIncome(){
- return state.grid.reduce((sum,v)=>v?sum+TYPES.find(t=>t.id===v.id).base*v.level:sum,0);
+ return state.grid.reduce((sum,v)=>v?sum+objIncome(TYPES.find(t=>t.id===v.id),v.level):sum,0);
+}
+function weatherIncome(){
+ return state.grid.reduce((sum,v)=>{
+  if(!v)return sum;
+  const t=TYPES.find(x=>x.id===v.id);
+  return sum+objIncome(t,v.level)*weatherMultiplier(t.id);
+ },0);
 }
 function xpForLevel(n){return 300+(n-1)*180}
 function levelFromXp(xp){
@@ -534,7 +583,7 @@ function levelFromXp(xp){
 function farmLevel(){return levelFromXp(state.rep).level}
 function mapBonusTotal(){return MAP_NODES.reduce((s,n)=>s+(state.mapClaimed[n.id]?n.bonus:0),0)}
 function income(){
- let x=baseIncome();
+ let x=weatherIncome();
  x*=1+state.upgrades.water*.25+state.upgrades.worker*.35+state.upgrades.market*.50+mapBonusTotal();
  return x;
 }
@@ -548,6 +597,8 @@ function render(){
  $('#level').textContent=farmLevel();
  const raw=baseIncome(), mult=raw?income()/raw:1;
  $('#mult').textContent=mult.toFixed(1);
+ const ev=todayEvent();
+ $('#weatherBadge').textContent=ev.icon+' '+ev.name+(ev.mult>1?' — '+ev.desc:'');
  const empty=state.grid.filter(x=>!x).length;
  $('#free').textContent=empty+' свободно';
  const cost=25+state.built*7;
@@ -561,7 +612,7 @@ function render(){
   if(!v)b.innerHTML='<span class="plus">+</span>';
   else{
    const t=TYPES.find(x=>x.id===v.id);
-   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${t.base*v.level}</span><span class="tag">${t.name}</span>`;
+   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${Math.floor(objIncome(t,v.level)*weatherMultiplier(t.id))}</span><span class="tag">${t.name}</span>`;
   }
   b.onclick=()=>selectCell(i);
   grid.appendChild(b);
@@ -609,9 +660,10 @@ $('#sellBtn').onclick=()=>{
 };
 function openObject(i){
  const v=state.grid[i],t=TYPES.find(x=>x.id===v.id);
+ const mult=weatherMultiplier(t.id),cur=Math.floor(objIncome(t,v.level)*mult),next=v.level<8?Math.floor(objIncome(t,v.level+1)*mult):null;
  $('#modalContent').innerHTML=`<img class="modalIcon" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgIcon(t.icon).replace('class="obj"',''))}">
- <h2>${t.name}</h2><div class="muted">Уровень ${v.level} • приносит ${t.base*v.level} 🪙/с</div>
- <div class="reward">Чтобы объединить: выбери ещё один такой же объект уровня ${v.level}. Максимальный уровень: 8.</div>
+ <h2>${t.name}</h2><div class="muted">Уровень ${v.level} • приносит ${cur} 🪙/с${mult>1?' (с бонусом дня)':''}</div>
+ <div class="reward">Чтобы объединить: выбери ещё один такой же объект уровня ${v.level}.${next?' После объединения будет приносить '+next+' 🪙/с.':' Это максимальный уровень.'}</div>
  <button class="btn primary" id="modalSelect">Выбрать для объединения</button>`;
  $('#modal').classList.add('show');$('#modalSelect').onclick=()=>{$('#modal').classList.remove('show');state.selected=[i];render()}
 }
@@ -957,8 +1009,16 @@ $('#lbRefreshBtn').onclick=()=>{
 };
 
 /* --- settings / about --- */
-function renderSoundBtn(){$('#soundToggleBtn').textContent=state.settings.sound?'Включены':'Выключены'}
+function renderSoundBtn(){
+ $('#soundToggleBtn').textContent=state.settings.sound?'Включены':'Выключены';
+ $('#musicToggleBtn').textContent=state.settings.music?'Включена':'Выключена';
+}
 $('#soundToggleBtn').onclick=()=>{state.settings.sound=!state.settings.sound;renderSoundBtn();save();playSound('click')};
+$('#musicToggleBtn').onclick=()=>{
+ state.settings.music=!state.settings.music;
+ if(state.settings.music)startMusic();else stopMusic();
+ renderSoundBtn();save();playSound('click');
+};
 $('#settingsResetBtn').onclick=()=>{if(confirm('Точно сбросить весь прогресс? Это действие нельзя отменить.')){localStorage.removeItem('happyFarmV2');location.reload()}};
 
 /* --- menu wiring --- */
@@ -1000,6 +1060,17 @@ function metaChecks(){
   state.dialogsShown.noSpace=true;
   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Свободных клеток не осталось!','Объединяй одинаковые постройки одного уровня, чтобы освободить место, или открой новый участок земли через меню ☰ → «Расширение клеток».']});
  }
+ const key=todayKey();
+ if(state.tutorialDone && state.lastWeatherDay!==key){
+  const first=state.lastWeatherDay===0;
+  state.lastWeatherDay=key;
+  const ev=todayEvent();
+  toast(ev.icon+' Новый день: '+ev.name+(ev.mult>1?' — '+ev.desc:''));
+  if(first&&!state.dialogsShown.firstWeather){
+   state.dialogsShown.firstWeather=true;
+   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Заметил? Каждый день на ферме своя погода — она временно усиливает доход у подходящих построек.','Загляни на ферму завтра — погода сменится, и выгодно будет что-то другое.']});
+  }
+ }
 }
 const baseRender=render;
 render=function(){baseRender();metaProgress();metaChecks()};
@@ -1014,6 +1085,7 @@ function initStartScreen(){
  $('#startResetBtn').style.display=save_?'inline-block':'none';
  $('#startPlayBtn').onclick=()=>{
   playSound('click');
+  startMusic();
   metaClose('startScreen');
   $('#app').style.display='';
   enterGame();

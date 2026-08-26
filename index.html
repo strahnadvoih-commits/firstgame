@@ -286,7 +286,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.5 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.6 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -398,7 +398,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.5</b></div>
+  <div class="statLine"><span>Версия</span><b>5.6</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
@@ -855,7 +855,7 @@ $('#dailyBtn').onclick=()=>{
  if(state.daily===day){toast('📅 Уже получено сегодня');return}
  state.daily=day;const r=300+state.upgrades.market*80;state.coins+=r;state.rep+=30;playSound('coin');toast('📅 Ежедневная награда +'+r+' 🪙');render();
 };
-$('#resetBtn').onclick=()=>{confirmAction('Сбросить ферму?','Весь прогресс будет удалён без возможности восстановления.','Сбросить',()=>{localStorage.removeItem('happyFarmV2');location.reload()})}
+$('#resetBtn').onclick=()=>{confirmAction('Сбросить ферму?','Весь прогресс будет удалён без возможности восстановления.','Сбросить',fullReset)}
 $('#close').onclick=()=>$('#modal').classList.remove('show');
 $('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.tab).classList.add('active')});
@@ -883,9 +883,23 @@ async function ygInit(){
   }
  }catch(e){}
 }
+let resetInProgress=false;
 function cloudSaveNow(){
- if(!YG.player)return;
+ if(!YG.player||resetInProgress)return;
  try{YG.player.setData(state).catch(()=>{})}catch(e){}
+}
+async function fullReset(){
+ resetInProgress=true;
+ try{
+  if(YG.player){
+   await Promise.race([
+    YG.player.setData({}).catch(()=>{}),
+    new Promise(r=>setTimeout(r,1500))
+   ]);
+  }
+ }catch(e){}
+ localStorage.removeItem('happyFarmV2');
+ location.reload();
 }
 function showRewardedAd(onReward,onNoReward){
  if(!YG.ysdk?.adv){toast('Реклама доступна в Яндекс Играх');onNoReward();return}
@@ -1106,7 +1120,7 @@ $('#musicToggleBtn').onclick=()=>{
  if(state.settings.music)startMusic();else stopMusic();
  renderSoundBtn();save();playSound('click');
 };
-$('#settingsResetBtn').onclick=()=>{confirmAction('Сбросить весь прогресс?','Это действие нельзя отменить.','Сбросить',()=>{localStorage.removeItem('happyFarmV2');location.reload()})};
+$('#settingsResetBtn').onclick=()=>{confirmAction('Сбросить весь прогресс?','Это действие нельзя отменить.','Сбросить',fullReset)};
 
 /* --- menu wiring --- */
 $('#continueBtn').onclick=()=>metaClose('menuOverlay');
@@ -1183,7 +1197,7 @@ function initStartScreen(){
  };
  $('#startSettingsBtn').onclick=()=>{renderSoundBtn();metaOpen('settingsOverlay')};
  $('#startAboutBtn').onclick=()=>metaOpen('aboutOverlay');
- $('#startResetBtn').onclick=()=>{confirmAction('Начать заново?','Весь текущий прогресс будет удалён.','Начать заново',()=>{localStorage.removeItem('happyFarmV2');location.reload()})};
+ $('#startResetBtn').onclick=()=>{confirmAction('Начать заново?','Весь текущий прогресс будет удалён.','Начать заново',fullReset)};
 }
 function enterGame(){
  if(META.entered)return;META.entered=true;

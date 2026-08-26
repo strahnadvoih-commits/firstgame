@@ -286,7 +286,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.4 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.5 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -303,7 +303,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <div class="tutStep" data-step="1">
     <span class="badge">ШАГ 2 ИЗ 7</span><h2>🏗️ Строительство</h2>
     <div class="tutArt"><div class="big">🏡</div></div>
-    <p>Нажимай на пустую клетку или кнопку «Построить» и выбери, что построить, из доступных вариантов. У каждого типа построек есть лимит на ферме. Когда над постройкой загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
+    <p>Нажимай на пустую клетку или кнопку «Построить» и выбери, что построить, из доступных вариантов. У каждого типа построек есть лимит на ферме, а новые типы открываются с ростом уровня фермы. Когда над постройкой загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
    </div>
    <div class="tutStep" data-step="2">
     <span class="badge">ШАГ 3 ИЗ 7</span><h2>✨ Объединение</h2>
@@ -398,7 +398,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.4</b></div>
+  <div class="statLine"><span>Версия</span><b>5.5</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
@@ -447,12 +447,12 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 
 <script>
 const TYPES=[
- {id:'wheat',name:'Пшеничное поле',icon:'wheat',base:2,price:25,sell:18,max:8},
- {id:'cow',name:'Молочная ферма',icon:'cow',base:4,price:55,sell:40,max:8},
- {id:'mill',name:'Солнечная мельница',icon:'mill',base:7,price:90,sell:65,max:8},
- {id:'orchard',name:'Яблоневый сад',icon:'apple',base:11,price:135,sell:98,max:8},
- {id:'barn',name:'Большой амбар',icon:'barn',base:17,price:195,sell:142,max:8},
- {id:'cafe',name:'Фермерское кафе',icon:'cafe',base:26,price:300,sell:220,max:8}
+ {id:'wheat',name:'Пшеничное поле',icon:'wheat',base:2,price:25,sell:18,max:8,unlockLevel:1},
+ {id:'cow',name:'Молочная ферма',icon:'cow',base:4,price:55,sell:40,max:8,unlockLevel:1},
+ {id:'mill',name:'Солнечная мельница',icon:'mill',base:7,price:90,sell:65,max:8,unlockLevel:2},
+ {id:'orchard',name:'Яблоневый сад',icon:'apple',base:11,price:135,sell:98,max:8,unlockLevel:3},
+ {id:'barn',name:'Большой амбар',icon:'barn',base:17,price:195,sell:142,max:8,unlockLevel:5},
+ {id:'cafe',name:'Фермерское кафе',icon:'cafe',base:26,price:300,sell:220,max:8,unlockLevel:7}
 ];
 const CROPS={
  wheat:{id:'grain',icon:'🌾',name:'Зерно',price:4},
@@ -682,20 +682,25 @@ function buildAt(i){
  if(state.coins<cost){toast('Не хватает монет');return}
  const counts={};
  state.grid.forEach(v=>{if(v)counts[v.id]=(counts[v.id]||0)+1});
- let choices=TYPES.filter(t=>t.price<=cost+70&&(counts[t.id]||0)<t.max);
- if(!choices.length)choices=TYPES.filter(t=>(counts[t.id]||0)<t.max);
- if(!choices.length){toast('Все постройки на максимуме — объединяй, чтобы освободить лимит');return}
- openBuildPicker(i,cost,choices,counts);
+ const lvl=farmLevel();
+ const anyBuildable=TYPES.some(t=>t.unlockLevel<=lvl&&(counts[t.id]||0)<t.max);
+ if(!anyBuildable){toast('Все доступные постройки на максимуме — прокачай уровень фермы или объединяй постройки');return}
+ openBuildPicker(i,cost,counts,lvl);
 }
-function openBuildPicker(i,cost,choices,counts){
- $('#modalContent').innerHTML=`<h2>🏗️ Что построить?</h2><div class="muted">Стоимость: ${fmt(cost)} 🪙 за любую из построек ниже</div>
- <div class="collection">${choices.map(t=>`<div class="collectionItem" style="cursor:pointer" onclick="confirmBuild(${i},'${t.id}',${cost})"><div class="ci">${svgIcon(t.icon)}</div><b style="font-size:9px">${t.name}</b><small style="font-size:8px;color:#7a887d">${counts[t.id]||0}/${t.max} шт · ${t.base} 🪙/с</small></div>`).join('')}</div>`;
+function openBuildPicker(i,cost,counts,lvl){
+ $('#modalContent').innerHTML=`<h2>🏗️ Что построить?</h2><div class="muted">Стоимость: ${fmt(cost)} 🪙 за любую доступную постройку</div>
+ <div class="collection">${TYPES.map(t=>{
+  const locked=t.unlockLevel>lvl,maxed=!locked&&(counts[t.id]||0)>=t.max,disabled=locked||maxed;
+  const sub=locked?'Нужен уровень фермы '+t.unlockLevel:maxed?'Лимит '+t.max+'/'+t.max:(counts[t.id]||0)+'/'+t.max+' шт · '+t.base+' 🪙/с';
+  return `<div class="collectionItem ${disabled?'locked':''}" style="cursor:${disabled?'default':'pointer'}" ${disabled?'':`onclick="confirmBuild(${i},'${t.id}',${cost})"`}><div class="ci">${locked?'🔒':svgIcon(t.icon)}</div><b style="font-size:9px">${locked?'???':t.name}</b><small style="font-size:8px;color:#7a887d">${sub}</small></div>`;
+ }).join('')}</div>`;
  $('#modal').classList.add('show');
 }
 window.confirmBuild=(i,typeId,cost)=>{
  $('#modal').classList.remove('show');
  if(state.grid[i]||state.coins<cost)return;
- const t=TYPES.find(x=>x.id===typeId);if(!t)return;
+ const t=TYPES.find(x=>x.id===typeId);if(!t||t.unlockLevel>farmLevel())return;
+ const count=state.grid.filter(v=>v&&v.id===typeId).length;if(count>=t.max)return;
  state.coins-=cost;state.built++;state.rep+=10;
  state.grid[i]={id:t.id,level:1,harvestAt:Date.now()+harvestInterval(1)};
  const cell=$('#grid').children[i];if(cell)cell.classList.add('new');
@@ -967,10 +972,10 @@ $('#tutBack').onclick=()=>{if(META.tutorialStep>0){META.tutorialStep--;metaTutor
 
 /* --- book / stats / expand --- */
 function metaOpenBook(){
- const unlockedCost=25+state.built*7+70;
+ const lvl=farmLevel();
  $('#collection').innerHTML=TYPES.map(t=>{
-   const unlocked=(state.built>0 && (t.price<=unlockedCost || state.grid.some(x=>x&&x.id===t.id)));
-   return `<div class="collectionItem ${unlocked?'':'locked'}"><div class="ci">${svgIcon(t.icon)}</div><b style="font-size:9px">${unlocked?t.name:'???'}</b><small style="font-size:8px;color:#7a887d">${unlocked?'доход '+t.base+'/с':'строй больше'}</small></div>`;
+   const unlocked=t.unlockLevel<=lvl;
+   return `<div class="collectionItem ${unlocked?'':'locked'}"><div class="ci">${unlocked?svgIcon(t.icon):'🔒'}</div><b style="font-size:9px">${unlocked?t.name:'???'}</b><small style="font-size:8px;color:#7a887d">${unlocked?'доход '+t.base+'/с':'уровень фермы '+t.unlockLevel}</small></div>`;
  }).join('');
  metaOpen('bookOverlay');
 }
@@ -1132,7 +1137,11 @@ function metaProgress(){
    state.coins+=reward;
    playSound('levelup');
    toast('🏆 Уровень фермы '+lvl+'! +'+reward+' 🪙');
-   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Твоя ферма выросла — уровень '+lvl+'! Вот немного монет на развитие: +'+reward+' 🪙.','Загляни на карту долины в меню ☰ — возможно, открылась новая точка на пути.']});
+   const newTypes=TYPES.filter(t=>t.unlockLevel===lvl);
+   const lines=['Твоя ферма выросла — уровень '+lvl+'! Вот немного монет на развитие: +'+reward+' 🪙.'];
+   if(newTypes.length)lines.push('Теперь можно строить: '+newTypes.map(t=>t.name).join(', ')+'! Загляни в выбор построек.');
+   lines.push('Загляни на карту долины в меню ☰ — возможно, открылась новая точка на пути.');
+   queueDialog({name:'Дед Матвей',role:'Наставник',lines});
   }
  }
 }

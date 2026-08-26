@@ -79,7 +79,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 .section{display:none}.section.active{display:block}
 .float{position:fixed;z-index:90;pointer-events:none;color:#4a9845;font-weight:1000;font-size:14px;animation:floatUp .9s ease-out forwards;text-shadow:0 1px #fff}
 @keyframes floatUp{to{transform:translateY(-55px);opacity:0}}
-.modal{position:fixed;inset:0;background:rgba(30,43,32,.48);display:none;place-items:end center;z-index:220;padding:10px 10px max(10px,env(safe-area-inset-bottom)) 10px}.modal.show{display:grid}
+.modal{position:fixed;inset:0;background:rgba(30,43,32,.48);display:none;place-items:end center;z-index:520;padding:10px 10px max(10px,env(safe-area-inset-bottom)) 10px}.modal.show{display:grid}
 .card{width:min(480px,100%);background:#fffdf3;border:3px solid #536453;border-radius:20px;padding:14px;box-shadow:var(--shadow);animation:sheet .2s ease-out}
 @keyframes sheet{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 .close{float:right;border:0;background:transparent;font-size:24px;cursor:pointer;width:40px;height:40px;display:grid;place-items:center}
@@ -286,7 +286,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.3 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.4 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -303,7 +303,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <div class="tutStep" data-step="1">
     <span class="badge">ШАГ 2 ИЗ 7</span><h2>🏗️ Строительство</h2>
     <div class="tutArt"><div class="big">🏡</div></div>
-    <p>Нажимай на пустую клетку или кнопку «Построить». Объект начинает приносить монеты автоматически. Когда над ним загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
+    <p>Нажимай на пустую клетку или кнопку «Построить» и выбери, что построить, из доступных вариантов. У каждого типа построек есть лимит на ферме. Когда над постройкой загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
    </div>
    <div class="tutStep" data-step="2">
     <span class="badge">ШАГ 3 ИЗ 7</span><h2>✨ Объединение</h2>
@@ -398,7 +398,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.3</b></div>
+  <div class="statLine"><span>Версия</span><b>5.4</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
@@ -616,13 +616,20 @@ function floatAt(el,text){
  const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='float';f.textContent=text;
  f.style.left=(r.left+r.width/2-15)+'px';f.style.top=(r.top+8)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),900);
 }
+function confirmAction(title,message,okLabel,onConfirm){
+ $('#modalContent').innerHTML=`<h2>${title}</h2><div class="muted">${message}</div>
+ <div class="two" style="margin-top:12px"><button class="btn" id="confirmCancelBtn">Отмена</button><button class="btn primary" id="confirmOkBtn">${okLabel}</button></div>`;
+ $('#modal').classList.add('show');
+ $('#confirmCancelBtn').onclick=()=>$('#modal').classList.remove('show');
+ $('#confirmOkBtn').onclick=()=>{$('#modal').classList.remove('show');onConfirm()};
+}
 function render(){
  $('#coins').textContent=fmt(state.coins);$('#rep').textContent=fmt(state.rep);$('#income').textContent=fmt(income())+'/с';
  $('#level').textContent=farmLevel();
  const raw=baseIncome(), mult=raw?income()/raw:1;
  $('#mult').textContent=mult.toFixed(1);
  const ev=todayEvent();
- $('#weatherBadge').textContent=ev.icon+' '+ev.name+(ev.mult>1?' — '+ev.desc:'');
+ $('#weatherBadge').textContent=ev.icon+' '+ev.name+' — '+ev.desc;
  const empty=state.grid.filter(x=>!x).length;
  $('#free').textContent=empty+' свободно';
  const cost=25+state.built*7;
@@ -673,8 +680,23 @@ function collectHarvest(i){
 function buildAt(i){
  const cost=25+state.built*7;
  if(state.coins<cost){toast('Не хватает монет');return}
+ const counts={};
+ state.grid.forEach(v=>{if(v)counts[v.id]=(counts[v.id]||0)+1});
+ let choices=TYPES.filter(t=>t.price<=cost+70&&(counts[t.id]||0)<t.max);
+ if(!choices.length)choices=TYPES.filter(t=>(counts[t.id]||0)<t.max);
+ if(!choices.length){toast('Все постройки на максимуме — объединяй, чтобы освободить лимит');return}
+ openBuildPicker(i,cost,choices,counts);
+}
+function openBuildPicker(i,cost,choices,counts){
+ $('#modalContent').innerHTML=`<h2>🏗️ Что построить?</h2><div class="muted">Стоимость: ${fmt(cost)} 🪙 за любую из построек ниже</div>
+ <div class="collection">${choices.map(t=>`<div class="collectionItem" style="cursor:pointer" onclick="confirmBuild(${i},'${t.id}',${cost})"><div class="ci">${svgIcon(t.icon)}</div><b style="font-size:9px">${t.name}</b><small style="font-size:8px;color:#7a887d">${counts[t.id]||0}/${t.max} шт · ${t.base} 🪙/с</small></div>`).join('')}</div>`;
+ $('#modal').classList.add('show');
+}
+window.confirmBuild=(i,typeId,cost)=>{
+ $('#modal').classList.remove('show');
+ if(state.grid[i]||state.coins<cost)return;
+ const t=TYPES.find(x=>x.id===typeId);if(!t)return;
  state.coins-=cost;state.built++;state.rep+=10;
- const unlocked=TYPES.filter(t=>t.price<=cost+70);const t=unlocked[Math.floor(Math.random()*unlocked.length)];
  state.grid[i]={id:t.id,level:1,harvestAt:Date.now()+harvestInterval(1)};
  const cell=$('#grid').children[i];if(cell)cell.classList.add('new');
  playSound('build');
@@ -683,7 +705,7 @@ function buildAt(i){
   state.dialogsShown.firstBuild=true;
   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Отличное начало! Твоя первая постройка уже приносит монеты каждую секунду.','Строй ещё — а когда у тебя появятся два одинаковых объекта одного уровня, попробуй их объединить.']});
  }
-}
+};
 $('#buildBtn').onclick=()=>{const i=state.grid.findIndex(x=>!x);if(i>=0)buildAt(i)}
 function mergeSelected(){
  if(state.selected.length!==2){toast('Выбери два одинаковых объекта');return}
@@ -828,7 +850,7 @@ $('#dailyBtn').onclick=()=>{
  if(state.daily===day){toast('📅 Уже получено сегодня');return}
  state.daily=day;const r=300+state.upgrades.market*80;state.coins+=r;state.rep+=30;playSound('coin');toast('📅 Ежедневная награда +'+r+' 🪙');render();
 };
-$('#resetBtn').onclick=()=>{if(confirm('Сбросить всю ферму?')){localStorage.removeItem('happyFarmV2');location.reload()}}
+$('#resetBtn').onclick=()=>{confirmAction('Сбросить ферму?','Весь прогресс будет удалён без возможности восстановления.','Сбросить',()=>{localStorage.removeItem('happyFarmV2');location.reload()})}
 $('#close').onclick=()=>$('#modal').classList.remove('show');
 $('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.tab).classList.add('active')});
@@ -1079,7 +1101,7 @@ $('#musicToggleBtn').onclick=()=>{
  if(state.settings.music)startMusic();else stopMusic();
  renderSoundBtn();save();playSound('click');
 };
-$('#settingsResetBtn').onclick=()=>{if(confirm('Точно сбросить весь прогресс? Это действие нельзя отменить.')){localStorage.removeItem('happyFarmV2');location.reload()}};
+$('#settingsResetBtn').onclick=()=>{confirmAction('Сбросить весь прогресс?','Это действие нельзя отменить.','Сбросить',()=>{localStorage.removeItem('happyFarmV2');location.reload()})};
 
 /* --- menu wiring --- */
 $('#continueBtn').onclick=()=>metaClose('menuOverlay');
@@ -1152,7 +1174,7 @@ function initStartScreen(){
  };
  $('#startSettingsBtn').onclick=()=>{renderSoundBtn();metaOpen('settingsOverlay')};
  $('#startAboutBtn').onclick=()=>metaOpen('aboutOverlay');
- $('#startResetBtn').onclick=()=>{if(confirm('Точно начать заново? Весь текущий прогресс будет удалён.')){localStorage.removeItem('happyFarmV2');location.reload()}};
+ $('#startResetBtn').onclick=()=>{confirmAction('Начать заново?','Весь текущий прогресс будет удалён.','Начать заново',()=>{localStorage.removeItem('happyFarmV2');location.reload()})};
 }
 function enterGame(){
  if(META.entered)return;META.entered=true;

@@ -92,7 +92,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 @media(min-width:700px){body{padding:18px}.app{min-height:calc(100vh - 36px)}}
 
 /* ===== META / TUTORIAL / MENU ===== */
-.menuOverlay,.tutorialOverlay,.bookOverlay{position:fixed;inset:0;background:rgba(24,38,28,.58);display:none;place-items:center;z-index:200;padding:14px}
+.menuOverlay,.tutorialOverlay,.bookOverlay{position:fixed;inset:0;background:rgba(24,38,28,.58);display:none;place-items:center;z-index:510;padding:14px}
 .menuOverlay.show,.tutorialOverlay.show,.bookOverlay.show{display:grid}
 .menuCard,.tutorialCard,.bookCard{width:min(480px,100%);max-height:92vh;overflow:auto;overscroll-behavior:contain;background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:14px;box-shadow:0 18px 45px rgba(25,39,28,.28)}
 .menuCard h2,.tutorialCard h2,.bookCard h2{margin:0 0 4px}
@@ -163,7 +163,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 .startGhost{background:transparent;border:0;color:#43503f;text-decoration:underline;font-size:10px;cursor:pointer;padding:6px}
 
 /* ===== DIALOG (NPC) ===== */
-.dialogOverlay{position:fixed;inset:0;background:rgba(24,38,28,.55);display:none;place-items:end center;z-index:260;padding:12px 12px max(12px,env(safe-area-inset-bottom)) 12px}
+.dialogOverlay{position:fixed;inset:0;background:rgba(24,38,28,.55);display:none;place-items:end center;z-index:515;padding:12px 12px max(12px,env(safe-area-inset-bottom)) 12px}
 .dialogOverlay.show{display:grid}
 .dialogCard{width:min(480px,100%);background:#fffdf3;border:3px solid #526453;border-radius:20px;padding:13px;box-shadow:var(--shadow);animation:sheet .2s ease-out;display:flex;gap:10px;align-items:flex-start}
 .dlgAvatar{flex:0 0 auto;width:54px;height:54px;border:2px solid #6c7b6d;border-radius:50%;background:#eef6e8;display:grid;place-items:center;overflow:hidden}
@@ -286,7 +286,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
   </div>
   <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Весёлая ферма v5.6 • mobile-first HTML5</div>
+  <div class="menuFooter">Весёлая ферма v5.7 • mobile-first HTML5</div>
  </div>
 </div>
 
@@ -398,7 +398,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <button class="closeBig" data-close="aboutOverlay">×</button>
   <h2>ℹ️ Об игре</h2>
   <div class="muted">Весёлая ферма — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.6</b></div>
+  <div class="statLine"><span>Версия</span><b>5.7</b></div>
   <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
   <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
   <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
@@ -1111,8 +1111,9 @@ $('#lbRefreshBtn').onclick=()=>{
 
 /* --- settings / about --- */
 function renderSoundBtn(){
- $('#soundToggleBtn').textContent=state.settings.sound?'Включены':'Выключены';
- $('#musicToggleBtn').textContent=state.settings.music?'Включена':'Выключена';
+ const s=$('#soundToggleBtn'),m=$('#musicToggleBtn');
+ if(s)s.textContent=state.settings.sound?'Включены':'Выключены';
+ if(m)m.textContent=state.settings.music?'Включена':'Выключена';
 }
 $('#soundToggleBtn').onclick=()=>{state.settings.sound=!state.settings.sound;renderSoundBtn();save();playSound('click')};
 $('#musicToggleBtn').onclick=()=>{
@@ -1131,7 +1132,7 @@ $('#bookBtn').onclick=()=>{metaClose('menuOverlay');metaOpenBook()};
 $('#statsBtn').onclick=()=>{metaClose('menuOverlay');metaOpenStats()};
 $('#expandBtn').onclick=()=>{metaClose('menuOverlay');metaOpenExpand()};
 $('#saveBtn').onclick=()=>{save();playSound('click');toast('💾 Прогресс сохранён')};
-$('#menuSettingsBtn').onclick=()=>{metaClose('menuOverlay');renderSoundBtn();metaOpen('settingsOverlay')};
+$('#menuSettingsBtn').onclick=()=>{metaClose('menuOverlay');metaOpen('settingsOverlay');renderSoundBtn()};
 $('#menuAboutBtn').onclick=()=>{metaClose('menuOverlay');metaOpen('aboutOverlay')};
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>metaClose(b.dataset.close));
 $('#menuBtn').onclick=()=>{playSound('click');metaOpen('menuOverlay')};
@@ -1146,7 +1147,7 @@ function metaProgress(){
  $('#farmTitle').textContent=titles[Math.min(titles.length-1,lvl-1)];
  if(lvl>state.lastLevel){
   state.lastLevel=lvl;
-  if(state.tutorialDone){
+  if(state.tutorialDone&&META.entered){
    const reward=60+lvl*25;
    state.coins+=reward;
    playSound('levelup');
@@ -1160,6 +1161,7 @@ function metaProgress(){
  }
 }
 function metaChecks(){
+ if(!META.entered)return;
  const empty=state.grid.filter(x=>!x).length;
  if(empty===0 && state.built>0 && !state.dialogsShown.noSpace){
   state.dialogsShown.noSpace=true;
@@ -1195,7 +1197,7 @@ function initStartScreen(){
   $('#app').style.display='';
   enterGame();
  };
- $('#startSettingsBtn').onclick=()=>{renderSoundBtn();metaOpen('settingsOverlay')};
+ $('#startSettingsBtn').onclick=()=>{metaOpen('settingsOverlay');renderSoundBtn()};
  $('#startAboutBtn').onclick=()=>metaOpen('aboutOverlay');
  $('#startResetBtn').onclick=()=>{confirmAction('Начать заново?','Весь текущий прогресс будет удалён.','Начать заново',fullReset)};
 }
@@ -1215,6 +1217,15 @@ function enterGame(){
   },350);
  }
 }
+
+/* Delegated fallback for Settings/About — fires regardless of any per-element
+   binding timing/ordering issue, since it resolves the target at click time. */
+document.addEventListener('click',e=>{
+ if(e.target.closest('#startSettingsBtn')){metaOpen('settingsOverlay');renderSoundBtn()}
+ else if(e.target.closest('#startAboutBtn')){metaOpen('aboutOverlay')}
+ else if(e.target.closest('#menuSettingsBtn')){metaClose('menuOverlay');metaOpen('settingsOverlay');renderSoundBtn()}
+ else if(e.target.closest('#menuAboutBtn')){metaClose('menuOverlay');metaOpen('aboutOverlay')}
+});
 
 render();save();renderSoundBtn();initStartScreen();ygInit();
 

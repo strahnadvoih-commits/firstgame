@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Визуальная новелла</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game">
+
+  <!-- Главное меню -->
+  <div id="main-menu" class="screen active">
+    <h1 class="game-title">Тени Старого Города</h1>
+    <p class="game-subtitle">визуальная новелла</p>
+    <div class="menu-buttons">
+      <button id="btn-start">Новая игра</button>
+      <button id="btn-continue">Продолжить</button>
+      <button id="btn-about">Об игре</button>
+    </div>
+  </div>
+
+  <!-- Экран "Об игре" -->
+  <div id="about-screen" class="screen">
+    <div class="about-box">
+      <h2>Об игре</h2>
+      <p>Небольшая визуальная новелла на чистом JavaScript.
+      Ваши решения влияют на ход истории — попробуйте пройти её несколько раз,
+      чтобы увидеть разные концовки.</p>
+      <button id="btn-about-back">Назад</button>
+    </div>
+  </div>
+
+  <!-- Игровой экран -->
+  <div id="game-screen" class="screen">
+
+    <div id="background"></div>
+
+    <div id="stage">
+      <div class="char-slot" id="char-left"></div>
+      <div class="char-slot" id="char-center"></div>
+      <div class="char-slot" id="char-right"></div>
+    </div>
+
+    <!-- Слой выбора вариантов -->
+    <div id="choices" class="hidden"></div>
+
+    <!-- Диалоговое окно -->
+    <div id="dialogue-box">
+      <div id="speaker-name"></div>
+      <div id="dialogue-text"></div>
+      <div id="continue-indicator">▼</div>
+    </div>
+
+    <div id="top-bar">
+      <button id="btn-menu" title="Меню">☰</button>
+      <button id="btn-save" title="Сохранить">💾</button>
+      <button id="btn-load" title="Загрузить">📂</button>
+      <button id="btn-skip" title="Пропуск">⏩</button>
+    </div>
+
+  </div>
+
+  <!-- Экран сохранений -->
+  <div id="save-screen" class="screen">
+    <div class="save-box">
+      <h2 id="save-screen-title">Сохранения</h2>
+      <div id="save-slots"></div>
+      <button id="btn-save-back">Назад</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+</div>
+
+<script src="js/story.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>

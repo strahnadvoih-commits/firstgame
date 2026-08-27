@@ -1,0 +1,315 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #fff;
+  user-select: none;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 1280px;
+  max-height: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #111;
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+@media (max-width: 1280px) {
+  #game { max-width: 100vw; max-height: 100vh; }
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.screen.active { display: flex; }
+
+/* ---------- Главное меню ---------- */
+
+#main-menu {
+  background: radial-gradient(ellipse at 50% 30%, #2b3a67 0%, #0b0f1f 70%);
+}
+
+.game-title {
+  font-size: 3em;
+  letter-spacing: 0.08em;
+  margin-bottom: 0;
+  text-shadow: 0 0 20px rgba(120,160,255,0.6);
+}
+
+.game-subtitle {
+  opacity: 0.7;
+  margin-top: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.85em;
+}
+
+.menu-buttons {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 260px;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1em;
+  padding: 12px 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.03em;
+}
+button:hover { background: rgba(255,255,255,0.22); }
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.35; cursor: default; }
+button:disabled:hover { background: rgba(255,255,255,0.08); }
+
+/* ---------- Об игре / сохранения ---------- */
+
+#about-screen, #save-screen {
+  background: rgba(10,10,18,0.97);
+}
+
+.about-box, .save-box {
+  max-width: 560px;
+  width: 85%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 30px 34px;
+  text-align: center;
+}
+.about-box p { line-height: 1.6; opacity: 0.9; }
+.about-box button, .save-box button { margin-top: 20px; }
+
+#save-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+.save-slot {
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.05);
+  text-align: left;
+  font-size: 0.85em;
+}
+.save-slot:hover { background: rgba(255,255,255,0.15); }
+.save-slot .slot-title { font-weight: bold; margin-bottom: 4px; }
+.save-slot .slot-empty { opacity: 0.5; font-style: italic; }
+
+/* ---------- Игровой экран ---------- */
+
+#game-screen { justify-content: flex-end; }
+
+#background {
+  position: absolute;
+  inset: 0;
+  transition: background 0.6s ease, opacity 0.4s ease;
+  background: linear-gradient(180deg, #1e2a4a 0%, #0c0f1a 100%);
+}
+
+.bg-street { background:
+  linear-gradient(180deg, #2c3e6b 0%, #1a2140 55%, #10131f 100%); }
+.bg-street::after { content:""; }
+
+.bg-park { background:
+  linear-gradient(180deg, #355c3f 0%, #1c3a26 55%, #0e1a12 100%); }
+
+.bg-cafe { background:
+  linear-gradient(180deg, #6b3e2c 0%, #3a2418 55%, #1a0f0a 100%); }
+
+.bg-room { background:
+  linear-gradient(180deg, #3a3550 0%, #201c30 55%, #0f0d18 100%); }
+
+.bg-rooftop { background:
+  linear-gradient(180deg, #1a1a3a 0%, #12102a 40%, #050510 100%); }
+
+.bg-rain { background:
+  linear-gradient(180deg, #2a2f3a 0%, #14161d 60%, #08090c 100%); }
+
+#stage {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 78%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 6%;
+  pointer-events: none;
+}
+
+.char-slot {
+  flex: 0 0 auto;
+  width: 26%;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.3s ease;
+}
+.char-slot.visible { opacity: 1; transform: translateY(0); }
+.char-slot.dimmed { filter: brightness(0.45) saturate(0.6); }
+#char-center { width: 30%; max-width: 250px; }
+
+.char-figure {
+  width: 100%;
+  aspect-ratio: 3 / 5;
+  border-radius: 50% 50% 12% 12% / 45% 45% 10% 10%;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) inset, 0 4px 12px rgba(0,0,0,0.4);
+}
+.char-figure::before {
+  content: "";
+  position: absolute;
+  top: 6%;
+  left: 30%;
+  width: 40%;
+  height: 24%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+}
+.char-label {
+  margin-top: 8px;
+  font-size: 0.8em;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.4);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Диалог ---------- */
+
+#dialogue-box {
+  position: relative;
+  z-index: 5;
+  margin: 0 3% 3%;
+  min-height: 150px;
+  background: rgba(8,10,18,0.82);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 18px 26px 22px;
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+}
+
+#speaker-name {
+  font-weight: bold;
+  font-size: 1.05em;
+  margin-bottom: 8px;
+  color: #9ecbff;
+  letter-spacing: 0.03em;
+  min-height: 1.2em;
+}
+
+#dialogue-text {
+  line-height: 1.55;
+  font-size: 1.05em;
+  min-height: 3.3em;
+  white-space: pre-wrap;
+}
+
+#continue-indicator {
+  position: absolute;
+  right: 20px;
+  bottom: 14px;
+  opacity: 0;
+  animation: bob 1.2s infinite ease-in-out;
+}
+#continue-indicator.show { opacity: 0.75; }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ---------- Выбор ---------- */
+
+#choices {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(0,0,0,0.45);
+}
+#choices.hidden { display: none; }
+
+.choice-btn {
+  width: 70%;
+  max-width: 520px;
+  padding: 14px 20px;
+  font-size: 1em;
+  text-align: left;
+}
+
+/* ---------- Верхняя панель ---------- */
+
+#top-bar {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+}
+#top-bar button {
+  padding: 6px 10px;
+  font-size: 1em;
+  background: rgba(0,0,0,0.4);
+  border-radius: 6px;
+}
+
+/* ---------- Тост ---------- */
+
+#toast {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  transform: translate(-50%, 10px);
+  z-index: 40;
+  background: rgba(20,20,30,0.9);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.hidden { display: none !important; }

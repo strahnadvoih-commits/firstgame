@@ -192,19 +192,19 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    </div>
    <span>Funny Farm</span>
   </div>
-  <button class="iconBtn" id="menuBtn" aria-label="Меню">☰</button>
+  <button class="iconBtn" id="menuBtn" aria-label="Меню" data-i18n-aria="menuAria">☰</button>
  </div>
  <div class="stats">
-  <div class="stat"><small>Монеты</small><b id="coins">0</b></div>
-  <div class="stat"><small>Репутация</small><b id="rep">0</b></div>
-  <div class="stat"><small>Доход</small><b id="income">0/с</b></div>
+  <div class="stat"><small data-i18n="statCoins">Монеты</small><b id="coins">0</b></div>
+  <div class="stat"><small data-i18n="statRep">Репутация</small><b id="rep">0</b></div>
+  <div class="stat"><small data-i18n="statIncome">Доход</small><b id="income">0/с</b></div>
  </div>
 </header>
 
 <main class="main">
  <div class="hero">
   <div class="season" id="weatherBadge">Сезон 1 • Летний урожай</div>
-  <h1>Развивайте ферму, объединяйте постройки</h1>
+  <h1 data-i18n="heroTitle">Развивайте ферму, объединяйте постройки</h1>
   <span class="pill">×<span id="mult">1.0</span> доход</span>
  </div>
 
@@ -214,39 +214,39 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
  </section>
 
  <div class="panel">
-  <div class="panelTitle"><span>Стройка</span><small id="free">0 свободно</small></div>
+  <div class="panelTitle"><span data-i18n="panelBuildTitle">Стройка</span><small id="free">0 свободно</small></div>
   <div class="actions">
-   <button class="btn primary" id="buildBtn">Построить объект · <span id="buildCost">25</span> 🪙</button>
+   <button class="btn primary" id="buildBtn"><span data-i18n="buildBtnLabel">Построить объект</span> · <span id="buildCost">25</span> 🪙</button>
    <div class="two">
-    <button class="btn green" id="mergeBtn">✨ Объединить</button>
-    <button class="btn" id="sellBtn">Продать</button>
+    <button class="btn green" id="mergeBtn" data-i18n="mergeBtn">✨ Объединить</button>
+    <button class="btn" id="sellBtn" data-i18n="sellBtn">Продать</button>
    </div>
   </div>
  </div>
 
  <div class="tabs">
-  <button class="tab active" data-tab="orders"><span class="tabIcon">📜</span><span class="tabLabel">Заказы</span></button>
-  <button class="tab" data-tab="harvest"><span class="tabIcon">🌾</span><span class="tabLabel">Урожай</span></button>
-  <button class="tab" data-tab="upgrades"><span class="tabIcon">⬆️</span><span class="tabLabel">Улучшения</span></button>
-  <button class="tab" data-tab="more"><span class="tabIcon">🎁</span><span class="tabLabel">Бонусы</span></button>
+  <button class="tab active" data-tab="orders"><span class="tabIcon">📜</span><span class="tabLabel" data-i18n="tabOrders">Заказы</span></button>
+  <button class="tab" data-tab="harvest"><span class="tabIcon">🌾</span><span class="tabLabel" data-i18n="tabHarvest">Урожай</span></button>
+  <button class="tab" data-tab="upgrades"><span class="tabIcon">⬆️</span><span class="tabLabel" data-i18n="tabUpgrades">Улучшения</span></button>
+  <button class="tab" data-tab="more"><span class="tabIcon">🎁</span><span class="tabLabel" data-i18n="tabMore">Бонусы</span></button>
  </div>
 
- <section class="section active" id="orders"><div class="panel"><div class="panelTitle"><span>Заказы</span><small>обновляются сами</small></div><div id="quests"></div></div></section>
- <section class="section" id="harvest"><div class="panel"><div class="panelTitle"><span>Урожай</span><small>тапни спелую постройку</small></div><div id="harvestList"></div><div class="notice">🌤️ Погода дня влияет на размер урожая — смотри бейдж наверху фермы.</div></div></section>
- <section class="section" id="upgrades"><div class="panel"><div class="panelTitle"><span>Улучшения фермы</span><small>уровень <span id="level">1</span></small></div><div class="shop" id="shop"></div></div></section>
+ <section class="section active" id="orders"><div class="panel"><div class="panelTitle"><span data-i18n="ordersTitle">Заказы</span><small data-i18n="ordersSub">обновляются сами</small></div><div id="quests"></div></div></section>
+ <section class="section" id="harvest"><div class="panel"><div class="panelTitle"><span data-i18n="harvestTitle">Урожай</span><small data-i18n="harvestSub">тапни спелую постройку</small></div><div id="harvestList"></div><div class="notice" data-i18n="harvestNotice">🌤️ Погода дня влияет на размер урожая — смотри бейдж наверху фермы.</div></div></section>
+ <section class="section" id="upgrades"><div class="panel"><div class="panelTitle"><span data-i18n="upgradesTitle">Улучшения фермы</span><small><span data-i18n="upgradesLevelWord">уровень</span> <span id="level">1</span></small></div><div class="shop" id="shop"></div></div></section>
  <section class="section" id="more">
   <div class="panel">
-   <div class="panelTitle"><span>Бонусы</span><small>каждые 2 минуты</small></div>
+   <div class="panelTitle"><span data-i18n="moreTitle">Бонусы</span><small data-i18n="moreSub">каждые 2 минуты</small></div>
    <div class="actions">
-    <button class="btn primary" id="giftBtn">🎁 Открыть сундук фермера</button>
-    <button class="btn" id="dailyBtn">📅 Ежедневная награда</button>
-    <button class="btn" id="resetBtn">Сбросить сохранение</button>
+    <button class="btn primary" id="giftBtn" data-i18n="giftBtn">🎁 Открыть сундук фермера</button>
+    <button class="btn" id="dailyBtn" data-i18n="dailyBtn">📅 Ежедневная награда</button>
+    <button class="btn" id="resetBtn" data-i18n="resetBtn">Сбросить сохранение</button>
    </div>
   </div>
  </section>
 
 <div class="panel" id="farmProgressPanel">
- <div class="panelTitle"><span>🏆 Развитие фермы</span><small>уровень <span id="farmLevel">1</span></small></div>
+ <div class="panelTitle"><span data-i18n="farmProgressTitle">🏆 Развитие фермы</span><small><span data-i18n="upgradesLevelWord">уровень</span> <span id="farmLevel">1</span></small></div>
  <div class="expandInfo">
   <div><b id="farmTitle">Маленькая ферма</b><div class="progressBig"><i id="farmProgress" style="width:0%"></i></div></div>
   <span class="badge" id="farmXP">0 XP</span>
@@ -262,84 +262,84 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
  <div id="modalContent"></div>
 </div></div>
 <div class="offline" id="offline"><div class="card">
- <h2>🌅 Ты вернулся!</h2><p class="muted">Ферма работала без тебя.</p>
+ <h2 data-i18n="offlineTitle">🌅 Ты вернулся!</h2><p class="muted" data-i18n="offlineSub">Ферма работала без тебя.</p>
  <div class="reward" id="offlineReward"></div>
- <button class="btn primary" id="offlineOk">Забрать награду</button>
+ <button class="btn primary" id="offlineOk" data-i18n="offlineOk">Забрать награду</button>
 </div></div>
 <div class="toast" id="toast"></div>
 
 <div class="menuOverlay" id="menuOverlay">
  <div class="menuCard">
   <button class="closeBig" data-close="menuOverlay">×</button>
-  <h2>☰ Меню фермы</h2>
-  <div class="muted">Здесь собраны все системы игры.</div>
+  <h2 data-i18n="menuTitle">☰ Меню фермы</h2>
+  <div class="muted" data-i18n="menuSub">Здесь собраны все системы игры.</div>
   <div class="menuGrid">
-   <button class="menuTile" id="continueBtn"><b>🌾 Вернуться на ферму</b><small>Закрыть меню</small></button>
-   <button class="menuTile" id="tutorialBtn"><b>🎓 Обучение</b><small>Пройти обучение заново</small></button>
-   <button class="menuTile" id="mapBtn"><b>🗺️ Карта долины</b><small>Путь фермы и районы</small></button>
-   <button class="menuTile" id="leaderboardBtn"><b>🏆 Таблица лидеров</b><small>Сравни ферму с другими</small></button>
-   <button class="menuTile" id="bookBtn"><b>📖 Альбом</b><small>Все открытые объекты</small></button>
-   <button class="menuTile" id="statsBtn"><b>📊 Статистика</b><small>Прогресс и показатели</small></button>
-   <button class="menuTile" id="expandBtn"><b>🧩 Расширение клеток</b><small>Открывать новые клетки поля</small></button>
-   <button class="menuTile" id="saveBtn"><b>💾 Сохранить</b><small>Сохранить прогресс сейчас</small></button>
-   <button class="menuTile" id="menuSettingsBtn"><b>⚙️ Настройки</b><small>Звук и сброс прогресса</small></button>
-   <button class="menuTile" id="menuAboutBtn"><b>ℹ️ Об игре</b><small>Информация и версия</small></button>
+   <button class="menuTile" id="continueBtn"><b data-i18n="menuContinue">🌾 Вернуться на ферму</b><small data-i18n="menuContinueSub">Закрыть меню</small></button>
+   <button class="menuTile" id="tutorialBtn"><b data-i18n="menuTutorial">🎓 Обучение</b><small data-i18n="menuTutorialSub">Пройти обучение заново</small></button>
+   <button class="menuTile" id="mapBtn"><b data-i18n="menuMap">🗺️ Карта долины</b><small data-i18n="menuMapSub">Путь фермы и районы</small></button>
+   <button class="menuTile" id="leaderboardBtn"><b data-i18n="menuLeaderboard">🏆 Таблица лидеров</b><small data-i18n="menuLeaderboardSub">Сравни ферму с другими</small></button>
+   <button class="menuTile" id="bookBtn"><b data-i18n="menuBook">📖 Альбом</b><small data-i18n="menuBookSub">Все открытые объекты</small></button>
+   <button class="menuTile" id="statsBtn"><b data-i18n="menuStats">📊 Статистика</b><small data-i18n="menuStatsSub">Прогресс и показатели</small></button>
+   <button class="menuTile" id="expandBtn"><b data-i18n="menuExpand">🧩 Расширение клеток</b><small data-i18n="menuExpandSub">Открывать новые клетки поля</small></button>
+   <button class="menuTile" id="saveBtn"><b data-i18n="menuSave">💾 Сохранить</b><small data-i18n="menuSaveSub">Сохранить прогресс сейчас</small></button>
+   <button class="menuTile" id="menuSettingsBtn"><b data-i18n="menuSettings">⚙️ Настройки</b><small data-i18n="menuSettingsSub">Звук и сброс прогресса</small></button>
+   <button class="menuTile" id="menuAboutBtn"><b data-i18n="menuAbout">ℹ️ Об игре</b><small data-i18n="menuAboutSub">Информация и версия</small></button>
   </div>
-  <div class="notice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
-  <div class="menuFooter">Funny Farm v5.7 • mobile-first HTML5</div>
+  <div class="notice" data-i18n="menuNotice">💡 Совет: заказы обновляются сами, а через 🔄 можно заменить любое задание за 15 🪙. Открывай карту долины — там постоянные бонусы к доходу.</div>
+  <div class="menuFooter">Funny Farm v5.8 • mobile-first HTML5</div>
  </div>
 </div>
 
 <div class="tutorialOverlay" id="tutorialOverlay">
  <div class="tutorialCard">
   <button class="closeBig" data-close="tutorialOverlay">×</button>
-  <div class="tutMentor"><div class="dlgAvatar" style="width:36px;height:36px" id="tutMentorAvatar"></div><div><b>Дед Матвей</b><small>Наставник фермы</small></div></div>
+  <div class="tutMentor"><div class="dlgAvatar" style="width:36px;height:36px" id="tutMentorAvatar"></div><div><b>Дед Матвей</b><small data-i18n="tutMentorRole">Наставник фермы</small></div></div>
   <div id="tutorialSteps">
    <div class="tutStep active" data-step="0">
-    <span class="badge">ШАГ 1 ИЗ 7</span><h2>🌱 Добро пожаловать!</h2>
+    <span class="badge" data-i18n="tutStepBadge1">ШАГ 1 ИЗ 7</span><h2>🌱 Добро пожаловать!</h2>
     <div class="tutArt"><div class="big">🌾</div></div>
     <p>Это твоя ферма. Здесь всё строится вокруг простого цикла: <b>построй → заработай → объедини → улучши</b>.</p>
    </div>
    <div class="tutStep" data-step="1">
-    <span class="badge">ШАГ 2 ИЗ 7</span><h2>🏗️ Строительство</h2>
+    <span class="badge" data-i18n="tutStepBadge2">ШАГ 2 ИЗ 7</span><h2>🏗️ Строительство</h2>
     <div class="tutArt"><div class="big">🏡</div></div>
     <p>Нажимай на пустую клетку или кнопку «Построить» и выбери, что построить, из доступных вариантов. У каждого типа построек есть лимит на ферме, а новые типы открываются с ростом уровня фермы. Когда над постройкой загорится 🌾 — тапни, чтобы собрать урожай, и продай его во вкладке «Урожай».</p>
    </div>
    <div class="tutStep" data-step="2">
-    <span class="badge">ШАГ 3 ИЗ 7</span><h2>✨ Объединение</h2>
+    <span class="badge" data-i18n="tutStepBadge3">ШАГ 3 ИЗ 7</span><h2>✨ Объединение</h2>
     <div class="tutArt"><div class="big">🌾 + 🌾 = 🌾²</div></div>
     <p>Выбери <b>два одинаковых объекта одного уровня</b> и нажми «Объединить». Новый объект будет приносить больше.</p>
    </div>
    <div class="tutStep" data-step="3">
-    <span class="badge">ШАГ 4 ИЗ 7</span><h2>📜 Заказы</h2>
+    <span class="badge" data-i18n="tutStepBadge4">ШАГ 4 ИЗ 7</span><h2>📜 Заказы</h2>
     <div class="tutArt"><div class="big">📜</div></div>
     <p>Заказы дают крупные награды и <b>обновляются сами</b> — выполнил один, тут же появится новый. Не нравится задание — замени его через 🔄 за 15 монет.</p>
    </div>
    <div class="tutStep" data-step="4">
-    <span class="badge">ШАГ 5 ИЗ 7</span><h2>⬆️ Улучшения</h2>
+    <span class="badge" data-i18n="tutStepBadge5">ШАГ 5 ИЗ 7</span><h2>⬆️ Улучшения</h2>
     <div class="tutArt"><div class="big">🚜</div></div>
     <p>В меню улучшений покупай автоматизацию, рынок, рабочих и трактор. Они усиливают экономику всей фермы навсегда.</p>
    </div>
    <div class="tutStep" data-step="5">
-    <span class="badge">ШАГ 6 ИЗ 7</span><h2>🗺️ Карта и рейтинг</h2>
+    <span class="badge" data-i18n="tutStepBadge6">ШАГ 6 ИЗ 7</span><h2>🗺️ Карта и рейтинг</h2>
     <div class="tutArt"><div class="big">🗺️</div></div>
     <p>Качай уровень фермы, чтобы открывать районы на <b>карте долины</b> — каждый даёт постоянный бонус к доходу. В «Таблице лидеров» сравнивай свой прогресс с другими фермерами.</p>
    </div>
    <div class="tutStep" data-step="6">
-    <span class="badge">ШАГ 7 ИЗ 7</span><h2>🏆 Твоя цель</h2>
+    <span class="badge" data-i18n="tutStepBadge7">ШАГ 7 ИЗ 7</span><h2>🏆 Твоя цель</h2>
     <div class="tutArt"><div class="big">👑</div></div>
     <p>Развивай ферму, поднимай уровень и продвигайся по карте долины. После обучения можно играть в своём темпе. Если что — всё это можно повторить в меню ☰.</p>
    </div>
   </div>
   <div class="tutDots" id="tutDots"></div>
-  <div class="tutActions"><button class="btn" id="tutBack">Назад</button><button class="btn primary" id="tutNext">Далее</button></div>
+  <div class="tutActions"><button class="btn" id="tutBack" data-i18n="tutBack">Назад</button><button class="btn primary" id="tutNext" data-i18n="tutNext">Далее</button></div>
  </div>
 </div>
 
 <div class="bookOverlay" id="bookOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="bookOverlay">×</button>
-  <h2>📖 Альбом объектов</h2><div class="muted">Открывай новые постройки по мере роста стоимости строительства.</div>
+  <h2 data-i18n="bookTitle">📖 Альбом объектов</h2><div class="muted" data-i18n="bookSub">Открывай новые постройки по мере роста стоимости строительства.</div>
   <div class="collection" id="collection"></div>
  </div>
 </div>
@@ -347,7 +347,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 <div class="bookOverlay" id="statsOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="statsOverlay">×</button>
-  <h2>📊 Статистика</h2>
+  <h2 data-i18n="statsTitle">📊 Статистика</h2>
   <div id="statsContent"></div>
  </div>
 </div>
@@ -355,8 +355,8 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 <div class="bookOverlay" id="expandOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="expandOverlay">×</button>
-  <h2>🧩 Расширение клеток</h2>
-  <div class="muted">Открывай дополнительные клетки поля, чтобы разместить больше построек.</div>
+  <h2 data-i18n="expandTitle">🧩 Расширение клеток</h2>
+  <div class="muted" data-i18n="expandSub">Открывай дополнительные клетки поля, чтобы разместить больше построек.</div>
   <div id="expandContent"></div>
  </div>
 </div>
@@ -364,8 +364,8 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 <div class="bookOverlay" id="mapOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="mapOverlay">×</button>
-  <h2>🗺️ Карта долины</h2>
-  <div class="muted">Прокачивай уровень фермы, чтобы открывать районы и получать постоянные бонусы к доходу.</div>
+  <h2 data-i18n="mapTitle">🗺️ Карта долины</h2>
+  <div class="muted" data-i18n="mapSub">Прокачивай уровень фермы, чтобы открывать районы и получать постоянные бонусы к доходу.</div>
   <div class="mapPath" id="mapPath"></div>
  </div>
 </div>
@@ -373,39 +373,39 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
 <div class="bookOverlay" id="leaderboardOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="leaderboardOverlay">×</button>
-  <h2>🏆 Таблица лидеров</h2>
-  <div class="muted">Сравни свою ферму с другими фермерами долины.</div>
+  <h2 data-i18n="leaderboardTitle">🏆 Таблица лидеров</h2>
+  <div class="muted" data-i18n="leaderboardSub">Сравни свою ферму с другими фермерами долины.</div>
   <div id="leaderboardList"></div>
-  <button class="btn" id="lbRefreshBtn" style="margin-top:10px;width:100%">🔄 Обновить рейтинг</button>
-  <div class="notice">ℹ️ Это локальный рейтинг: твой результат сравнивается с ботами-фермерами прямо в браузере. Настоящий онлайн-рейтинг появится, когда будет подключён Leaderboards API Яндекс Игр.</div>
+  <button class="btn" id="lbRefreshBtn" style="margin-top:10px;width:100%" data-i18n="lbRefresh">🔄 Обновить рейтинг</button>
+  <div class="notice" data-i18n="lbNotice">ℹ️ Это локальный рейтинг: твой результат сравнивается с ботами-фермерами прямо в браузере. Настоящий онлайн-рейтинг появится, когда будет подключён Leaderboards API Яндекс Игр.</div>
  </div>
 </div>
 
 <div class="bookOverlay" id="settingsOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="settingsOverlay">×</button>
-  <h2>⚙️ Настройки</h2>
-  <div class="muted">Управляй звуком и своим прогрессом.</div>
-  <div class="toggleRow"><span>🔊 Звуковые эффекты</span><button class="btn" id="soundToggleBtn">Включены</button></div>
-  <div class="toggleRow"><span>🎵 Музыка</span><button class="btn" id="musicToggleBtn">Включена</button></div>
-  <div class="notice">💾 Игра сохраняется автоматически в памяти этого браузера (localStorage). Если очистить данные сайта — прогресс будет потерян.</div>
-  <button class="btn" id="settingsResetBtn" style="margin-top:10px;width:100%">🗑️ Сбросить весь прогресс</button>
+  <h2 data-i18n="settingsTitle">⚙️ Настройки</h2>
+  <div class="muted" data-i18n="settingsSub">Управляй звуком и своим прогрессом.</div>
+  <div class="toggleRow"><span data-i18n="settingsSound">🔊 Звуковые эффекты</span><button class="btn" id="soundToggleBtn">Включены</button></div>
+  <div class="toggleRow"><span data-i18n="settingsMusic">🎵 Музыка</span><button class="btn" id="musicToggleBtn">Включена</button></div>
+  <div class="notice" data-i18n="settingsNotice">💾 Игра сохраняется автоматически в памяти этого браузера (localStorage). Если очистить данные сайта — прогресс будет потерян.</div>
+  <button class="btn" id="settingsResetBtn" style="margin-top:10px;width:100%" data-i18n="settingsReset">🗑️ Сбросить весь прогресс</button>
  </div>
 </div>
 
 <div class="bookOverlay" id="aboutOverlay">
  <div class="bookCard">
   <button class="closeBig" data-close="aboutOverlay">×</button>
-  <h2>ℹ️ Об игре</h2>
+  <h2 data-i18n="aboutTitle">ℹ️ Об игре</h2>
   <div class="muted">Funny Farm — Merge Valley</div>
-  <div class="statLine"><span>Версия</span><b>5.7</b></div>
-  <div class="statLine"><span>Платформа</span><b>HTML5 / браузер</b></div>
-  <div class="statLine"><span>Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
-  <div class="statLine"><span>Сохранение</span><b>localStorage + облако</b></div>
-  <div class="notice">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Прокачивай уровень фермы, чтобы открывать районы на карте долины.</div>
-  <div class="notice">🌤️ Погода дня: каждый день на ферме своя погода — она временно усиливает доход у подходящих построек. Загляни завтра — бонус будет другим.</div>
-  <div class="notice">🌾 Урожай: постройки время от времени созревают (загорается значок над клеткой) — тапни, чтобы собрать, и продай на вкладке «Урожай». Погода влияет на размер урожая.</div>
-  <div class="notice">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
+  <div class="statLine"><span data-i18n="aboutVersion">Версия</span><b>5.8</b></div>
+  <div class="statLine"><span data-i18n="aboutPlatform">Платформа</span><b data-i18n="aboutPlatformValue">HTML5 / браузер</b></div>
+  <div class="statLine"><span data-i18n="aboutSdk">Яндекс SDK</span><b id="sdkStatus">не подключён</b></div>
+  <div class="statLine"><span data-i18n="aboutSave">Сохранение</span><b data-i18n="aboutSaveValue">localStorage + облако</b></div>
+  <div class="notice" data-i18n="aboutGoal">🎯 Цель игры: строй постройки, объединяй одинаковые пары в более сильные, выполняй заказы и развивай ферму. Прокачивай уровень фермы, чтобы открывать районы на карте долины.</div>
+  <div class="notice" data-i18n="aboutWeather">🌤️ Погода дня: каждый день на ферме своя погода — она временно усиливает доход у подходящих построек. Загляни завтра — бонус будет другим.</div>
+  <div class="notice" data-i18n="aboutHarvest">🌾 Урожай: постройки время от времени созревают (загорается значок над клеткой) — тапни, чтобы собрать, и продай на вкладке «Урожай». Погода влияет на размер урожая.</div>
+  <div class="notice" data-i18n="aboutControls">🕹️ Управление: тапни по пустой клетке, чтобы построить объект. Выбери два одинаковых объекта одного уровня и нажми «Объединить». Обучение всегда доступно в меню ☰.</div>
  </div>
 </div>
 
@@ -416,7 +416,7 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
    <div class="dlgName" id="dlgName"></div>
    <div class="dlgRole" id="dlgRole"></div>
    <div class="dlgText" id="dlgText"></div>
-   <div class="dlgFooter"><div class="dlgDots" id="dlgDots"></div><button class="btn primary" id="dlgNext">Далее</button></div>
+   <div class="dlgFooter"><div class="dlgDots" id="dlgDots"></div><button class="btn primary" id="dlgNext" data-i18n="tutNext">Далее</button></div>
   </div>
  </div>
 </div>
@@ -436,31 +436,120 @@ h1{font-size:21px;line-height:1.05;margin:2px 0 7px}.pill{display:inline-flex;pa
   <div class="startButtons">
    <button class="btn primary startBig" id="startPlayBtn">▶️ Играть</button>
    <div class="two">
-    <button class="btn" id="startSettingsBtn">⚙️ Настройки</button>
-    <button class="btn" id="startAboutBtn">ℹ️ Об игре</button>
+    <button class="btn" id="startSettingsBtn" data-i18n="startSettings">⚙️ Настройки</button>
+    <button class="btn" id="startAboutBtn" data-i18n="startAbout">ℹ️ Об игре</button>
    </div>
-   <button class="startGhost" id="startResetBtn" style="display:none">Начать заново с чистого листа</button>
+   <button class="startGhost" id="startResetBtn" style="display:none" data-i18n="startReset">Начать заново с чистого листа</button>
   </div>
   <div class="startFooter">HTML5 • localStorage • Yandex Games SDK</div>
  </div>
 </div>
 
 <script>
+/* ===== LANGUAGE AUTO-DETECTION (Yandex Games SDK requirement 2.14) =====
+   Detected once synchronously from the browser locale as an offline fallback,
+   then overridden with the authoritative value from ysdk.environment.i18n.lang
+   once the SDK resolves in ygInit(). Russian-family locales keep the game's
+   native Russian text; everything else falls back to the English chrome
+   translations below (deep narrative content — dialogue, tutorial story text,
+   quest/weather/map flavor text — stays Russian, since Russian is the only
+   fully localized language declared for this game). */
+const RU_FAMILY=new Set(['ru','be','kk','uk','uz']);
+const YG={ysdk:null,player:null,lang:'ru'};
+try{YG.lang=((navigator.language||navigator.userLanguage||'ru').slice(0,2)||'ru').toLowerCase()}catch(e){}
+function isEn(){return !RU_FAMILY.has(YG.lang)}
+function LN(o){return isEn()&&o.nameEn?o.nameEn:o.name}
+function LD(o){return isEn()&&o.descEn?o.descEn:o.desc}
+const I18N_EN={
+ menuAria:'Menu',
+ statCoins:'Coins',statRep:'Reputation',statIncome:'Income',
+ heroTitle:'Grow your farm, merge buildings',
+ panelBuildTitle:'Construction',buildBtnLabel:'Build',freeSuffix:'free',
+ mergeBtn:'✨ Merge',sellBtn:'Sell',
+ tabOrders:'Orders',tabHarvest:'Harvest',tabUpgrades:'Upgrades',tabMore:'Bonuses',
+ ordersTitle:'Orders',ordersSub:'update automatically',
+ harvestTitle:'Harvest',harvestSub:'tap a ripe building',
+ harvestNotice:'🌤️ Today’s weather affects harvest size — check the badge above the farm.',
+ upgradesTitle:'Farm upgrades',upgradesLevelWord:'level',
+ moreTitle:'Bonuses',moreSub:'every 2 minutes',
+ giftBtn:'🎁 Open farmer’s chest',dailyBtn:'📅 Daily reward',resetBtn:'Reset save',
+ farmProgressTitle:'🏆 Farm progress',
+ menuTitle:'☰ Farm menu',menuSub:'All game systems in one place.',
+ menuContinue:'🌾 Back to the farm',menuContinueSub:'Close menu',
+ menuTutorial:'🎓 Tutorial',menuTutorialSub:'Replay the tutorial',
+ menuMap:'🗺️ Valley map',menuMapSub:'Farm path and districts',
+ menuLeaderboard:'🏆 Leaderboard',menuLeaderboardSub:'Compare your farm with others',
+ menuBook:'📖 Collection',menuBookSub:'All unlocked buildings',
+ menuStats:'📊 Statistics',menuStatsSub:'Progress and metrics',
+ menuExpand:'🧩 Expand plots',menuExpandSub:'Unlock new field cells',
+ menuSave:'💾 Save',menuSaveSub:'Save progress now',
+ menuSettings:'⚙️ Settings',menuSettingsSub:'Sound and progress reset',
+ menuAbout:'ℹ️ About',menuAboutSub:'Info and version',
+ menuNotice:'💡 Tip: orders refresh automatically, and 🔄 lets you swap any order for 15 🪙. Open the valley map — it gives permanent income bonuses.',
+ tutMentorRole:'Farm mentor',tutBack:'Back',tutNext:'Next',
+ tutStepBadge1:'STEP 1 OF 7',tutStepBadge2:'STEP 2 OF 7',tutStepBadge3:'STEP 3 OF 7',
+ tutStepBadge4:'STEP 4 OF 7',tutStepBadge5:'STEP 5 OF 7',tutStepBadge6:'STEP 6 OF 7',tutStepBadge7:'STEP 7 OF 7',
+ bookTitle:'📖 Buildings collection',bookSub:'Unlock new buildings as your farm grows.',
+ statsTitle:'📊 Statistics',
+ expandTitle:'🧩 Expand plots',expandSub:'Unlock extra field cells to fit more buildings.',
+ mapTitle:'🗺️ Valley map',mapSub:'Level up your farm to unlock districts and permanent income bonuses.',
+ leaderboardTitle:'🏆 Leaderboard',leaderboardSub:'Compare your farm with other valley farmers.',
+ lbRefresh:'🔄 Refresh ranking',
+ lbNotice:'ℹ️ This is a local ranking: your result is compared with bot farmers right in the browser. A real online ranking will appear once the Yandex Games Leaderboards API is connected.',
+ settingsTitle:'⚙️ Settings',settingsSub:'Manage sound and your progress.',
+ settingsSound:'🔊 Sound effects',settingsMusic:'🎵 Music',
+ settingsNotice:'💾 The game saves automatically in this browser’s storage (localStorage). Clearing site data will erase your progress.',
+ settingsReset:'🗑️ Reset all progress',
+ aboutTitle:'ℹ️ About',aboutVersion:'Version',aboutPlatform:'Platform',aboutSdk:'Yandex SDK',aboutSave:'Save',
+ aboutPlatformValue:'HTML5 / browser',aboutSaveValue:'localStorage + cloud',
+ aboutGoal:'🎯 Goal: build structures, merge matching pairs into stronger ones, complete orders and grow your farm. Level up to unlock districts on the valley map.',
+ aboutWeather:'🌤️ Weather of the day: every day the farm has different weather that temporarily boosts income for matching buildings. Come back tomorrow for a different bonus.',
+ aboutHarvest:'🌾 Harvest: buildings ripen occasionally (an icon lights up over the cell) — tap to collect, then sell on the “Harvest” tab. Weather affects harvest size.',
+ aboutControls:'🕹️ Controls: tap an empty cell to build. Select two matching objects of the same level and press “Merge”. The tutorial is always available in the ☰ menu.',
+ sdkConnected:'connected ✅',sdkNotConnected:'not connected',
+ startSettings:'⚙️ Settings',startAbout:'ℹ️ About',startReset:'Start over from scratch',
+ startPlay:'▶️ Play',startContinue:'▶️ Continue',
+ offlineTitle:'🌅 You’re back!',offlineSub:'The farm kept working while you were away.',offlineOk:'Claim reward',
+ buildPickerTitle:'🏗️ What to build?',buildPickerCost:'Cost: ',buildPickerAny:' 🪙 for any available building',
+ needLevel:'Requires farm level ',limitLabel:'Limit ',pcsLabel:'pcs',
+ incomeLabel:'income ',needLevelShort:'farm level ',
+ on:'On',off:'Off',
+ cancel:'Cancel',
+ confirmResetTitle:'Reset the farm?',confirmResetMsg:'All progress will be permanently deleted.',confirmResetOk:'Reset',
+ confirmResetAllTitle:'Reset all progress?',confirmResetAllMsg:'This action cannot be undone.',
+ confirmStartOverTitle:'Start over?',confirmStartOverMsg:'All current progress will be deleted.',confirmStartOverOk:'Start over',
+};
+function T(key,ru){return isEn()?(I18N_EN[key]||ru||key):(ru!==undefined?ru:key)}
+function applyI18n(){
+ document.documentElement.lang=YG.lang;
+ if(!isEn())return;
+ document.querySelectorAll('[data-i18n]').forEach(el=>{
+  const key=el.getAttribute('data-i18n');
+  if(I18N_EN[key])el.textContent=I18N_EN[key];
+ });
+ document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+  const key=el.getAttribute('data-i18n-aria');
+  if(I18N_EN[key])el.setAttribute('aria-label',I18N_EN[key]);
+ });
+ const sdkEl=$('#sdkStatus');
+ if(sdkEl&&sdkEl.textContent==='не подключён')sdkEl.textContent=I18N_EN.sdkNotConnected;
+}
+
 const TYPES=[
- {id:'wheat',name:'Пшеничное поле',icon:'wheat',base:2,price:25,sell:18,max:8,unlockLevel:1},
- {id:'cow',name:'Молочная ферма',icon:'cow',base:4,price:55,sell:40,max:8,unlockLevel:1},
- {id:'mill',name:'Солнечная мельница',icon:'mill',base:7,price:90,sell:65,max:8,unlockLevel:2},
- {id:'orchard',name:'Яблоневый сад',icon:'apple',base:11,price:135,sell:98,max:8,unlockLevel:3},
- {id:'barn',name:'Большой амбар',icon:'barn',base:17,price:195,sell:142,max:8,unlockLevel:5},
- {id:'cafe',name:'Фермерское кафе',icon:'cafe',base:26,price:300,sell:220,max:8,unlockLevel:7}
+ {id:'wheat',name:'Пшеничное поле',nameEn:'Wheat field',icon:'wheat',base:2,price:25,sell:18,max:8,unlockLevel:1},
+ {id:'cow',name:'Молочная ферма',nameEn:'Dairy farm',icon:'cow',base:4,price:55,sell:40,max:8,unlockLevel:1},
+ {id:'mill',name:'Солнечная мельница',nameEn:'Sun mill',icon:'mill',base:7,price:90,sell:65,max:8,unlockLevel:2},
+ {id:'orchard',name:'Яблоневый сад',nameEn:'Apple orchard',icon:'apple',base:11,price:135,sell:98,max:8,unlockLevel:3},
+ {id:'barn',name:'Большой амбар',nameEn:'Big barn',icon:'barn',base:17,price:195,sell:142,max:8,unlockLevel:5},
+ {id:'cafe',name:'Фермерское кафе',nameEn:'Farm café',icon:'cafe',base:26,price:300,sell:220,max:8,unlockLevel:7}
 ];
 const CROPS={
- wheat:{id:'grain',icon:'🌾',name:'Зерно',price:4},
- cow:{id:'milk',icon:'🥛',name:'Молоко',price:8},
- mill:{id:'flour',icon:'🍚',name:'Мука',price:13},
- orchard:{id:'apple',icon:'🍎',name:'Яблоки',price:20},
- barn:{id:'wool',icon:'🧶',name:'Шерсть',price:28},
- cafe:{id:'bread',icon:'🍞',name:'Выпечка',price:42}
+ wheat:{id:'grain',icon:'🌾',name:'Зерно',nameEn:'Grain',price:4},
+ cow:{id:'milk',icon:'🥛',name:'Молоко',nameEn:'Milk',price:8},
+ mill:{id:'flour',icon:'🍚',name:'Мука',nameEn:'Flour',price:13},
+ orchard:{id:'apple',icon:'🍎',name:'Яблоки',nameEn:'Apples',price:20},
+ barn:{id:'wool',icon:'🧶',name:'Шерсть',nameEn:'Wool',price:28},
+ cafe:{id:'bread',icon:'🍞',name:'Выпечка',nameEn:'Baked goods',price:42}
 };
 const UP=[
  {id:'water',icon:'💧',name:'Автополив',desc:'+25% дохода',base:90,m:1},
@@ -490,12 +579,12 @@ const MAP_NODES=[
 ];
 const BOT_NAMES=['Аня','Игорь','Ольга','Тимур','Марина','Слава','Ксюша','Богдан','Люда'];
 const WEATHER_EVENTS=[
- {id:'sunny',icon:'☀️',name:'Солнечно',affects:['wheat','orchard'],mult:1.2,desc:'пшеница и сад +20%'},
- {id:'rain',icon:'🌧️',name:'Дождливо',affects:['cow'],mult:1.25,desc:'молочная ферма +25%'},
- {id:'windy',icon:'💨',name:'Ветрено',affects:['mill'],mult:1.3,desc:'мельницы +30%'},
- {id:'market_day',icon:'🎪',name:'Рыночный день',affects:'all',mult:1.15,desc:'весь доход +15%'},
- {id:'harvest',icon:'🍂',name:'Сбор урожая',affects:['wheat','cow','orchard'],mult:1.2,desc:'поля, ферма и сад +20%'},
- {id:'calm',icon:'🌤️',name:'Тихий день',affects:[],mult:1,desc:'без бонусов — обычный день'}
+ {id:'sunny',icon:'☀️',name:'Солнечно',nameEn:'Sunny',affects:['wheat','orchard'],mult:1.2,desc:'пшеница и сад +20%',descEn:'wheat & orchard +20%'},
+ {id:'rain',icon:'🌧️',name:'Дождливо',nameEn:'Rainy',affects:['cow'],mult:1.25,desc:'молочная ферма +25%',descEn:'dairy farm +25%'},
+ {id:'windy',icon:'💨',name:'Ветрено',nameEn:'Windy',affects:['mill'],mult:1.3,desc:'мельницы +30%',descEn:'mills +30%'},
+ {id:'market_day',icon:'🎪',name:'Рыночный день',nameEn:'Market day',affects:'all',mult:1.15,desc:'весь доход +15%',descEn:'all income +15%'},
+ {id:'harvest',icon:'🍂',name:'Сбор урожая',nameEn:'Harvest time',affects:['wheat','cow','orchard'],mult:1.2,desc:'поля, ферма и сад +20%',descEn:'fields, farm & orchard +20%'},
+ {id:'calm',icon:'🌤️',name:'Тихий день',nameEn:'Calm day',affects:[],mult:1,desc:'без бонусов — обычный день',descEn:'no bonuses — a regular day'}
 ];
 function todayKey(){const d=new Date();return d.getFullYear()*372+d.getMonth()*31+d.getDate()}
 function todayEvent(){return WEATHER_EVENTS[todayKey()%WEATHER_EVENTS.length]}
@@ -618,7 +707,7 @@ function floatAt(el,text){
 }
 function confirmAction(title,message,okLabel,onConfirm){
  $('#modalContent').innerHTML=`<h2>${title}</h2><div class="muted">${message}</div>
- <div class="two" style="margin-top:12px"><button class="btn" id="confirmCancelBtn">Отмена</button><button class="btn primary" id="confirmOkBtn">${okLabel}</button></div>`;
+ <div class="two" style="margin-top:12px"><button class="btn" id="confirmCancelBtn">${T('cancel','Отмена')}</button><button class="btn primary" id="confirmOkBtn">${okLabel}</button></div>`;
  $('#modal').classList.add('show');
  $('#confirmCancelBtn').onclick=()=>$('#modal').classList.remove('show');
  $('#confirmOkBtn').onclick=()=>{$('#modal').classList.remove('show');onConfirm()};
@@ -629,9 +718,9 @@ function render(){
  const raw=baseIncome(), mult=raw?income()/raw:1;
  $('#mult').textContent=mult.toFixed(1);
  const ev=todayEvent();
- $('#weatherBadge').textContent=ev.icon+' '+ev.name+' — '+ev.desc;
+ $('#weatherBadge').textContent=ev.icon+' '+LN(ev)+' — '+LD(ev);
  const empty=state.grid.filter(x=>!x).length;
- $('#free').textContent=empty+' свободно';
+ $('#free').textContent=empty+' '+T('freeSuffix','свободно');
  const cost=25+state.built*7;
  $('#buildCost').textContent=fmt(cost);
  $('#buildBtn').disabled=empty===0||state.coins<cost;
@@ -646,7 +735,7 @@ function render(){
   else{
    const t=TYPES.find(x=>x.id===v.id);
    const crop=CROPS[t.id];
-   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${Math.floor(objIncome(t,v.level)*weatherMultiplier(t.id))}</span><span class="tag">${t.name}</span>`+(ready&&crop?`<span class="harvestBadge">${crop.icon}</span>`:'');
+   b.innerHTML=svgIcon(t.icon)+`<span class="level">${v.level}</span><span class="incomeDot">+${Math.floor(objIncome(t,v.level)*weatherMultiplier(t.id))}</span><span class="tag">${LN(t)}</span>`+(ready&&crop?`<span class="harvestBadge">${crop.icon}</span>`:'');
   }
   b.onclick=()=>selectCell(i);
   grid.appendChild(b);
@@ -688,11 +777,11 @@ function buildAt(i){
  openBuildPicker(i,cost,counts,lvl);
 }
 function openBuildPicker(i,cost,counts,lvl){
- $('#modalContent').innerHTML=`<h2>🏗️ Что построить?</h2><div class="muted">Стоимость: ${fmt(cost)} 🪙 за любую доступную постройку</div>
+ $('#modalContent').innerHTML=`<h2>${T('buildPickerTitle','🏗️ Что построить?')}</h2><div class="muted">${T('buildPickerCost','Стоимость: ')}${fmt(cost)}${T('buildPickerAny',' 🪙 за любую доступную постройку')}</div>
  <div class="collection">${TYPES.map(t=>{
   const locked=t.unlockLevel>lvl,maxed=!locked&&(counts[t.id]||0)>=t.max,disabled=locked||maxed;
-  const sub=locked?'Нужен уровень фермы '+t.unlockLevel:maxed?'Лимит '+t.max+'/'+t.max:(counts[t.id]||0)+'/'+t.max+' шт · '+t.base+' 🪙/с';
-  return `<div class="collectionItem ${disabled?'locked':''}" style="cursor:${disabled?'default':'pointer'}" ${disabled?'':`onclick="confirmBuild(${i},'${t.id}',${cost})"`}><div class="ci">${locked?'🔒':svgIcon(t.icon)}</div><b style="font-size:9px">${locked?'???':t.name}</b><small style="font-size:8px;color:#7a887d">${sub}</small></div>`;
+  const sub=locked?T('needLevel','Нужен уровень фермы ')+t.unlockLevel:maxed?T('limitLabel','Лимит ')+t.max+'/'+t.max:(counts[t.id]||0)+'/'+t.max+' '+T('pcsLabel','шт')+' · '+t.base+' 🪙/с';
+  return `<div class="collectionItem ${disabled?'locked':''}" style="cursor:${disabled?'default':'pointer'}" ${disabled?'':`onclick="confirmBuild(${i},'${t.id}',${cost})"`}><div class="ci">${locked?'🔒':svgIcon(t.icon)}</div><b style="font-size:9px">${locked?'???':LN(t)}</b><small style="font-size:8px;color:#7a887d">${sub}</small></div>`;
  }).join('')}</div>`;
  $('#modal').classList.add('show');
 }
@@ -705,7 +794,7 @@ window.confirmBuild=(i,typeId,cost)=>{
  state.grid[i]={id:t.id,level:1,harvestAt:Date.now()+harvestInterval(1)};
  const cell=$('#grid').children[i];if(cell)cell.classList.add('new');
  playSound('build');
- toast(t.icon==='wheat'?'🌾 Новое поле!':'🏗️ '+t.name);render();
+ toast(t.icon==='wheat'?'🌾 Новое поле!':'🏗️ '+LN(t));render();
  if(state.built===1&&!state.dialogsShown.firstBuild){
   state.dialogsShown.firstBuild=true;
   queueDialog({name:'Дед Матвей',role:'Наставник',lines:['Отличное начало! Твоя первая постройка уже приносит монеты каждую секунду.','Строй ещё — а когда у тебя появятся два одинаковых объекта одного уровня, попробуй их объединить.']});
@@ -734,7 +823,7 @@ function openObject(i){
  const v=state.grid[i],t=TYPES.find(x=>x.id===v.id);
  const mult=weatherMultiplier(t.id),cur=Math.floor(objIncome(t,v.level)*mult),next=v.level<8?Math.floor(objIncome(t,v.level+1)*mult):null;
  $('#modalContent').innerHTML=`<img class="modalIcon" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgIcon(t.icon).replace('class="obj"',''))}">
- <h2>${t.name}</h2><div class="muted">Уровень ${v.level} • приносит ${cur} 🪙/с${mult>1?' (с бонусом дня)':''}</div>
+ <h2>${LN(t)}</h2><div class="muted">Уровень ${v.level} • приносит ${cur} 🪙/с${mult>1?' (с бонусом дня)':''}</div>
  <div class="reward">Чтобы объединить: выбери ещё один такой же объект уровня ${v.level}.${next?' После объединения будет приносить '+next+' 🪙/с.':' Это максимальный уровень.'}</div>
  <button class="btn primary" id="modalSelect">Выбрать для объединения</button>`;
  $('#modal').classList.add('show');$('#modalSelect').onclick=()=>{$('#modal').classList.remove('show');state.selected=[i];render()}
@@ -799,7 +888,7 @@ function renderHarvest(){
  const el=$('#harvestList');if(!el)return;
  el.innerHTML=Object.values(CROPS).map(c=>{
   const n=state.inventory[c.id]||0;
-  return `<div class="quest"><div class="qicon">${c.icon}</div><div class="qbody"><b>${c.name}</b><small>${n} шт · ${c.price} 🪙/шт</small></div><button class="btn" ${n<1?'disabled':''} onclick="sellCrop('${c.id}')">Продать${n>0?' · +'+fmt(n*c.price)+' 🪙':''}</button></div>`;
+  return `<div class="quest"><div class="qicon">${c.icon}</div><div class="qbody"><b>${LN(c)}</b><small>${n} ${T('pcsLabel','шт')} · ${c.price} 🪙/${T('pcsLabel','шт')}</small></div><button class="btn" ${n<1?'disabled':''} onclick="sellCrop('${c.id}')">${T('sellBtn','Продать')}${n>0?' · +'+fmt(n*c.price)+' 🪙':''}</button></div>`;
  }).join('');
 }
 window.sellCrop=id=>{
@@ -855,19 +944,23 @@ $('#dailyBtn').onclick=()=>{
  if(state.daily===day){toast('📅 Уже получено сегодня');return}
  state.daily=day;const r=300+state.upgrades.market*80;state.coins+=r;state.rep+=30;playSound('coin');toast('📅 Ежедневная награда +'+r+' 🪙');render();
 };
-$('#resetBtn').onclick=()=>{confirmAction('Сбросить ферму?','Весь прогресс будет удалён без возможности восстановления.','Сбросить',fullReset)}
+$('#resetBtn').onclick=()=>{confirmAction(T('confirmResetTitle','Сбросить ферму?'),T('confirmResetMsg','Весь прогресс будет удалён без возможности восстановления.'),T('confirmResetOk','Сбросить'),fullReset)}
 $('#close').onclick=()=>$('#modal').classList.remove('show');
 $('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.tab).classList.add('active')});
 
 /* ===== YANDEX GAMES SDK ===== */
-const YG={ysdk:null,player:null};
 async function ygInit(){
  try{
   if(!window.YaGames)return;
   YG.ysdk=await YaGames.init();
   try{YG.ysdk.features?.LoadingAPI?.ready?.()}catch(e){}
-  const statusEl=$('#sdkStatus');if(statusEl)statusEl.textContent='подключён ✅';
+  try{
+   const l=YG.ysdk.environment?.i18n?.lang;
+   if(l)YG.lang=String(l).toLowerCase();
+  }catch(e){}
+  applyI18n();render();initStartScreen();
+  const statusEl=$('#sdkStatus');if(statusEl)statusEl.textContent=T('sdkConnected','подключён ✅');
   try{YG.player=await YG.ysdk.getPlayer({scopes:false})}catch(e){}
   if(YG.player&&!hasSave()&&!META.entered){
    try{
@@ -989,7 +1082,7 @@ function metaOpenBook(){
  const lvl=farmLevel();
  $('#collection').innerHTML=TYPES.map(t=>{
    const unlocked=t.unlockLevel<=lvl;
-   return `<div class="collectionItem ${unlocked?'':'locked'}"><div class="ci">${unlocked?svgIcon(t.icon):'🔒'}</div><b style="font-size:9px">${unlocked?t.name:'???'}</b><small style="font-size:8px;color:#7a887d">${unlocked?'доход '+t.base+'/с':'уровень фермы '+t.unlockLevel}</small></div>`;
+   return `<div class="collectionItem ${unlocked?'':'locked'}"><div class="ci">${unlocked?svgIcon(t.icon):'🔒'}</div><b style="font-size:9px">${unlocked?LN(t):'???'}</b><small style="font-size:8px;color:#7a887d">${unlocked?T('incomeLabel','доход ')+t.base+'/с':T('needLevelShort','уровень фермы ')+t.unlockLevel}</small></div>`;
  }).join('');
  metaOpen('bookOverlay');
 }
@@ -1112,8 +1205,8 @@ $('#lbRefreshBtn').onclick=()=>{
 /* --- settings / about --- */
 function renderSoundBtn(){
  const s=$('#soundToggleBtn'),m=$('#musicToggleBtn');
- if(s)s.textContent=state.settings.sound?'Включены':'Выключены';
- if(m)m.textContent=state.settings.music?'Включена':'Выключена';
+ if(s)s.textContent=state.settings.sound?T('on','Включены'):T('off','Выключены');
+ if(m)m.textContent=state.settings.music?T('on','Включена'):T('off','Выключена');
 }
 $('#soundToggleBtn').onclick=()=>{state.settings.sound=!state.settings.sound;renderSoundBtn();save();playSound('click')};
 $('#musicToggleBtn').onclick=()=>{
@@ -1121,7 +1214,7 @@ $('#musicToggleBtn').onclick=()=>{
  if(state.settings.music)startMusic();else stopMusic();
  renderSoundBtn();save();playSound('click');
 };
-$('#settingsResetBtn').onclick=()=>{confirmAction('Сбросить весь прогресс?','Это действие нельзя отменить.','Сбросить',fullReset)};
+$('#settingsResetBtn').onclick=()=>{confirmAction(T('confirmResetAllTitle','Сбросить весь прогресс?'),T('confirmResetAllMsg','Это действие нельзя отменить.'),T('confirmResetOk','Сбросить'),fullReset)};
 
 /* --- menu wiring --- */
 $('#continueBtn').onclick=()=>metaClose('menuOverlay');
@@ -1188,7 +1281,7 @@ function hasSave(){
 }
 function initStartScreen(){
  const save_=hasSave();
- $('#startPlayBtn').textContent=save_?'▶️ Продолжить':'▶️ Играть';
+ $('#startPlayBtn').textContent=save_?T('startContinue','▶️ Продолжить'):T('startPlay','▶️ Играть');
  $('#startResetBtn').style.display=save_?'inline-block':'none';
  $('#startPlayBtn').onclick=()=>{
   playSound('click');
@@ -1199,7 +1292,7 @@ function initStartScreen(){
  };
  $('#startSettingsBtn').onclick=()=>{metaOpen('settingsOverlay');renderSoundBtn()};
  $('#startAboutBtn').onclick=()=>metaOpen('aboutOverlay');
- $('#startResetBtn').onclick=()=>{confirmAction('Начать заново?','Весь текущий прогресс будет удалён.','Начать заново',fullReset)};
+ $('#startResetBtn').onclick=()=>{confirmAction(T('confirmStartOverTitle','Начать заново?'),T('confirmStartOverMsg','Весь текущий прогресс будет удалён.'),T('confirmStartOverOk','Начать заново'),fullReset)};
 }
 function enterGame(){
  if(META.entered)return;META.entered=true;
@@ -1227,7 +1320,7 @@ document.addEventListener('click',e=>{
  else if(e.target.closest('#menuAboutBtn')){metaClose('menuOverlay');metaOpen('aboutOverlay')}
 });
 
-render();save();renderSoundBtn();initStartScreen();ygInit();
+applyI18n();render();save();renderSoundBtn();initStartScreen();ygInit();
 
 let lastTick=Date.now();
 setInterval(()=>{

@@ -954,12 +954,14 @@ async function ygInit(){
  try{
   if(!window.YaGames)return;
   YG.ysdk=await YaGames.init();
-  try{YG.ysdk.features?.LoadingAPI?.ready?.()}catch(e){}
-  try{
-   const l=YG.ysdk.environment?.i18n?.lang;
-   if(l)YG.lang=String(l).toLowerCase();
-  }catch(e){}
+  /* Language must be read at startup, before LoadingAPI.ready() signals
+     the platform that loading finished — this is what the platform's
+     debug-panel language indicator (requirement 2.14) checks for. */
+  if(YG.ysdk.environment&&YG.ysdk.environment.i18n&&YG.ysdk.environment.i18n.lang){
+   YG.lang=String(YG.ysdk.environment.i18n.lang).toLowerCase();
+  }
   applyI18n();render();initStartScreen();
+  try{YG.ysdk.features&&YG.ysdk.features.LoadingAPI&&YG.ysdk.features.LoadingAPI.ready&&YG.ysdk.features.LoadingAPI.ready()}catch(e){}
   const statusEl=$('#sdkStatus');if(statusEl)statusEl.textContent=T('sdkConnected','подключён ✅');
   try{YG.player=await YG.ysdk.getPlayer({scopes:false})}catch(e){}
   if(YG.player&&!hasSave()&&!META.entered){
